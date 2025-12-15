@@ -1,0 +1,300 @@
+{
+    "login_register": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Login and Registration Section",
+        "description": "Customize your auth pages image, title, short description and more.",
+        "icon": "las la-user",
+        "content": {
+            "register_heading": "text",
+            "login_heading": "text"
+        },
+        "element": {
+            "images": {
+                "image": {
+                    "size": "640x800"
+                }
+            },
+            "modal": true
+        }
+    },
+    "banner": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Banner Section",
+        "description": "Showcase promotional banners with images, headings, and subheadings.",
+        "icon": "las la-image",
+        "content": {
+            "images": {
+                "image_one": {
+                    "size": "295x295"
+                },
+                "image_two": {
+                    "size": "475x405"
+                },
+                "image_three": {
+                    "size": "295x295"
+                }
+            },
+            "heading": "text",
+            "description": "textarea",
+            "button_name": "text",
+            "button_url": "text"
+        }
+    },
+    "feature": {
+        "builder": true,
+        "name": "Feature Section",
+        "description": "Highlight your key product or service features effectively.",
+        "icon": "las la-th-list",
+        "content": {
+            "heading": "text",
+            "subheading": "text"
+        },
+        "element": {
+            "images": {
+                "image": {
+                    "size": "70x70"
+                }
+            },
+            "title": "text",
+            "description": "textarea",
+            "modal": true
+        }
+    },
+    "blog": {
+        "builder": true,
+        "name": "Blog Section",
+        "description": "Highlight your key product or service features effectively.",
+        "icon": "las la-th-list",
+        "content": {
+            "heading": "text",
+            "subheading": "text"
+        },
+        "element": {
+            "images": {
+                "image": {
+                    "size": "820x400",
+                    "thumb": "410x200"
+                }
+            },
+            "title": "text",
+            "slug": "title",
+            "description": "textarea-nic",
+            "modal": false,
+            "seo": true
+        }
+    },
+    "faq": {
+        "builder": true,
+        "name": "FAQ Section",
+        "description": "Provide answers to common questions to assist and inform your users effectively.",
+        "icon": "las la-question-circle",
+        "content": {
+            "heading": "text",
+            "subheading": "text",
+            "button_name": "text",
+            "button_url": "text",
+            "footer_title": "text",
+            "footer_subtitle": "text"
+        },
+        "element": {
+            "question": "text",
+            "answer": "textarea",
+            "modal": true
+        }
+    },
+    "about_us": {
+        "builder": true,
+        "name": "About Us Section",
+        "description": "Provide information about your company, mission, and values to build trust and connect with your audience.",
+        "icon": "las la-info-circle",
+        "content": {
+            "heading": "text",
+            "subheading": "text",
+            "images": {
+                "image": {
+                    "size": "635x635"
+                }
+            }
+        },
+        "element": {
+            "title": "text",
+            "description": "text",
+            "modal": true
+        }
+    },
+    "service": {
+        "builder": true,
+        "name": "Service Section",
+        "description": "Showcase your services or offerings to attract potential customers.",
+        "icon": "las la-concierge-bell",
+        "content": {
+            "heading": "text",
+            "subheading": "text"
+        },
+        "element": {
+            "images": {
+                "icon_image": {
+                    "size": "100x100"
+                },
+                "image": {
+                    "size": "650x580"
+                }
+            },
+            "title": "text",
+            "description": "textarea",
+            "modal": true
+        }
+    },
+    "device": {
+        "builder": true,
+        "name": "Device Section",
+        "description": "Showcase your device flexibility or offerings to attract potential customers.",
+        "icon": "las la-mobile-alt",
+        "content": {
+            "title": "text",
+            "heading": "text",
+            "description": "textarea",
+            "images": {
+                "image": {
+                    "size": "640x370"
+                }
+            }
+        }
+    },
+    "pricing": {
+        "builder": true,
+        "name": "Pricing Section",
+        "description": "Display your pricing plans or packages clearly, helping customers compare options and choose the best plan for their needs.",
+        "icon": "las la-tags",
+        "content": {
+            "heading": "text",
+            "subheading": "text"
+        }
+    },
+    "testimonial": {
+        "builder": true,
+        "name": "Testimonial Section",
+        "description": "Showcase customer feedback and reviews to build trust and highlight positive experiences with your brand.",
+        "icon": "las la-comment",
+        "content": {
+            "heading": "text",
+            "subheading": "text"
+        },
+        "element": {
+            "images": {
+                "thumb": {
+                    "size": "100x100"
+                }
+            },
+            "name": "text",
+            "designation": "text",
+            "description": "textarea",
+            "select": {
+                "name": "rating",
+                "options": {
+                    "1": "*",
+                    "2": "**",
+                    "3": "***",
+                    "4": "****",
+                    "5": "*****"
+                }
+            },
+            "modal": true
+        }
+    },
+    "cta": {
+        "builder": true,
+        "name": "CTA Section",
+        "description": "Drive user engagement with a compelling call to action that encourages clicks, signups, or conversions.",
+        "icon": "las la-check-circle",
+        "content": {
+            "heading": "text",
+            "description": "text",
+            "button_one_name": "text",
+            "button_one_url": "text",
+            "button_two_name": "text",
+            "button_two_url": "text",
+            "images": {
+                "image": {
+                    "size": "530x360"
+                }
+            }
+        }
+    },
+    "footer": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Footer Section",
+        "description": "Display important links, contact information, and social media in the footer to help users navigate and stay connected.",
+        "icon": "las la-border-style",
+        "content": {
+            "title": "textarea",
+            "subscribe_title": "text"
+        }
+    },
+    "contact_us": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Contact Us",
+        "description": "Provide your contact details for user inquiries and support.",
+        "icon": "las la-phone",
+        "content": {
+            "images": {
+                "image": {
+                    "size": "630x740"
+                }
+            },
+            "email_address": "text",
+            "contact_address": "text",
+            "contact_number": "text"
+        }
+    },
+    "policy_pages": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Policy Pages",
+        "description": "Manage and display your legal and policy-related information pages.",
+        "icon": "las la-file-alt",
+        "hide_builder": true,
+        "element": {
+            "title": "text",
+            "slug": "title",
+            "details": "textarea-nic",
+            "modal": false,
+            "seo": true
+        }
+    },
+    "register_disable": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Registration Disable",
+        "description": "Temporarily disable user registrations with a custom message and button.",
+        "icon": "las la-user-slash",
+        "content": {
+            "images": {
+                "image": {
+                    "size": "512x512"
+                }
+            },
+            "heading": "text",
+            "subheading": "text",
+            "button_name": "text",
+            "button_url": "text"
+        }
+    },
+    "social_icon": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Social Icons",
+        "description": "Connect and link your website seamlessly to all social media profiles.",
+        "icon": "las la-share-alt",
+        "element": {
+            "title": "text",
+            "social_icon": "icon",
+            "url": "text",
+            "modal": true
+        }
+    }
+}

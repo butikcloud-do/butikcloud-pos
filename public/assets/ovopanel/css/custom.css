@@ -1,0 +1,244 @@
+/* SKELETON */
+.skeleton {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    z-index: 10;
+    background: linear-gradient(90deg, #ddd, #eee, #ddd);
+    background-size: 200% !important;
+    border-radius: 5px;
+    animation: skeleton 1.5s infinite reverse;
+}
+
+[data-theme=dark] .skeleton::after {
+    background: linear-gradient(90deg, #25293b, #555, #25293b);
+}
+
+@-webkit-keyframes skeleton {
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 100% 0;
+    }
+}
+
+@keyframes skeleton {
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 100% 0;
+    }
+}
+
+
+/* print css */
+.a4-page {
+    width: 8.27in;
+    height: 11.69in;
+    background: #fff;
+    margin: 0 auto;
+    page-break-after: always;
+}
+
+/* //pos invoice */
+.pos-invoice {
+    font-size: 12px;
+    width: 350px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 10px;
+}
+
+.pos-invoice .header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.pos-invoice .company-info {
+    font-size: 12px;
+    width: 50%;
+}
+
+.pos-invoice .company-name {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.pos-invoice .company-address,
+.pos-invoice .company-contact {
+    font-size: 12px;
+}
+
+.pos-invoice .invoice-info {
+    text-align: right;
+    font-size: 12px;
+    width: 50%;
+    display: block !important;
+}
+
+.pos-invoice .invoice-info h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.pos-invoice .customer-info {
+    margin-bottom: 15px;
+    font-size: 12px;
+}
+
+.pos-invoice .item-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.pos-invoice .item-list th,
+.pos-invoice .item-list td {
+    padding: 5px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.pos-invoice .item-list th {
+    border-bottom: 1px solid #000;
+}
+
+.pos-invoice .item-list td {
+    border-bottom: 1px solid #eee;
+}
+
+.pos-invoice .item-list td:nth-child(3),
+.pos-invoice .item-list td:nth-child(4),
+.pos-invoice .item-list td:nth-child(5) {
+    text-align: right;
+}
+
+.pos-invoice .totals {
+    margin-top: 10px;
+    font-size: 12px;
+    text-align: left;
+}
+
+.pos-invoice .totals p {
+    margin-bottom: 5px;
+}
+
+.pos-invoice .footer {
+    margin-top: 15px;
+    font-size: 10px;
+}
+
+.pos-invoice .footer p {
+    margin-top: 5px;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 2mm;
+        background-color: #fff !important;
+        background-color: #fff;
+    }
+
+    body {
+        background-color: #fff !important;
+    }
+
+    body>*:not(.print-content) {
+        display: none;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+
+    .invoice-logo .dark-show {
+        display: none !important;
+    }
+
+    .invoice-logo .light-show {
+        display: block !important;
+    }
+
+    .invoice-customer-info__item ,
+    .invoice-pricing-info__item,
+    .invoice-payment-info__item,
+    .invoice-pricing-info__item.total,
+    .invoice-info__item,
+    .invoice-company-info__item,
+    .invoice-table thead>tr>th,
+    .invoice-table tbody>tr>td {
+        color: #526384;
+
+    }
+
+    .invoice-info__item .value ,
+    .invoice-pricing-info__item.total {
+        color: #323234;
+
+    }
+    h1, h2, h3, h4, h5, h6{
+        color: #323234;;
+    }
+    .invoice-table thead > tr > th, .invoice-table tbody > tr > td {
+        border-color: rgba(0, 0, 0, 0.1) !important;
+    }
+    .invoice-table-responsive {
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }
+
+    [data-theme="dark"] .invoice-wrapper {
+        background-color: #fff;
+    }
+
+}
+.pos-invoice .item-list th {
+    white-space: nowrap;
+}
+.pos-invoice .item-list td {
+    font-size: 10px;
+}
+
+.product-table.table th,
+.product-table.table td {
+    white-space: nowrap !important;
+}
+
+@media screen and (max-width: 1366px) {
+    .product-table.table td {
+        min-width: 180px;
+    }
+}
+
+@media print {
+    .pos-invoice p,
+    .pos-invoice th,
+    .pos-invoice td{
+        color:#43404f !important;
+    }
+    .pos-invoice h1,
+    .pos-invoice h2,
+    .pos-invoice h3,
+    .pos-invoice h4,
+    .pos-invoice h5,
+    .pos-invoice h6{
+        color:#323234 !important;
+    }
+}
+
