@@ -281,7 +281,8 @@ trait ProductOperation
         $isRequired = $id ? 'nullable' : 'required';
 
         $validator = Validator::make($request->all(), [
-            'name'                            => ["required", Rule::unique('products', 'name')->where('user_id', getParentUser()->id)->ignore($id)],
+            // 'name'                            => ["required", Rule::unique('products', 'name')->where('user_id', getParentUser()->id)->ignore($id)],
+            'name'                            => ["required", Rule::unique('products', 'name')->where('user_id', getParentUser()->id)->whereNull('deleted_at')->ignore($id),
             'brand_id'                        => "required|integer|exists:brands,id",
             'unit_id'                         => "required|integer|exists:units,id",
             'category_id'                     => "required|integer|exists:categories,id",
