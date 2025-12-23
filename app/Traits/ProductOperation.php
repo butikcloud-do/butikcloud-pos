@@ -294,7 +294,14 @@ trait ProductOperation
 
             'product_detail'                  => 'required|array|min:1',
             "product_detail.*.id"             => "nullable|exists:product_details,id",
-            "product_detail.*.sku"            => ["nullable", Rule::unique('product_details', 'sku')->where('user_id', getParentUser()->id)->ignore($id)],
+            // "product_detail.*.sku"            => ["nullable", Rule::unique('product_details', 'sku')->where('user_id', getParentUser()->id)->ignore($id)],
+            
+            "product_detail.*.sku"            => ["nullable", Rule::unique('product_details', 'sku')->where('user_id', getParentUser()->id)->whereNotExists(function ($query) {
+                $query->selectRaw(1)
+                    ->from('products')
+                    ->whereRaw('products.id = product_details.product_id')
+                    ->whereNotNull('products.deleted_at');
+            })->ignore($id)],
             "product_detail.*.base_price"     => "required|numeric|gt:0",
             "product_detail.*.tax_id"         => "nullable|integer|exists:taxes,id",
             "product_detail.*.tax_type"       => ["nullable", Rule::in(Status::TAX_TYPE_EXCLUSIVE, Status::TAX_TYPE_INCLUSIVE)],
