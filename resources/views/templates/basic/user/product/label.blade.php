@@ -197,7 +197,7 @@
                     const qty = $productElement.find('.quantity').val() || 1;
                     const price = $productElement.find('.quantity').data('price');
                     for (let index = 1; index <= qty; index++) {
-                        html += htmlGenerateManager.barcodeHtml(productName, productCode, variantName, price * qty, $productElement);
+                        html += htmlGenerateManager.barcodeHtml(productName, productCode, variantName, price, $productElement);
                     }
                 });
                 $a4PageElement.removeClass('d-none');
