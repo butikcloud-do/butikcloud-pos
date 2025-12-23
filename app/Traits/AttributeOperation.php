@@ -26,7 +26,8 @@ trait AttributeOperation
     public function save(Request $request, $id = 0)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('attributes', 'name')->where('user_id', getParentUser()->id)->ignore($id)],
+            // 'name' => ['required', 'string', 'max:255', Rule::unique('attributes', 'name')->where('user_id', getParentUser()->id)->ignore($id)],
+            'name' => ['required', 'string', 'max:255', Rule::unique('attributes', 'name')->where('user_id', getParentUser()->id)->whereNull('deleted_at')->ignore($id)],
         ]);
 
         $user = getParentUser();
