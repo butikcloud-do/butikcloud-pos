@@ -13,6 +13,7 @@ use App\Models\Unit;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -193,10 +194,22 @@ trait ProductOperation
             ProductDetail::insert($productDetails);
             decrementFeature($user, 'product_limit');
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            $message[] = $ex->getMessage();
-            adminActivity("product", get_class($product), $product->id, "Try the product add but failed for: " . $ex->getMessage());
+
+            // Log comprehensive error details
+            Log::error('Product Creation Failed', [
+                'error_message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'stack_trace' => $e->getTraceAsString(),
+                'request_payload' => $request->all(),
+                'user_id' => $user->id ?? null,
+                'product_code' => $productCode ?? null,
+            ]);
+
+            $message[] = $e->getMessage();
+            adminActivity("product", get_class($product), $product->id ?? null, "Try the product add but failed for: " . $e->getMessage());
             return jsonResponse('exception', 'error', $message);
         }
 
@@ -265,10 +278,22 @@ trait ProductOperation
 
             ProductDetail::insert($productDetails);
             DB::commit();
-        } catch (Exception $ex) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            $message[] = $ex->getMessage();
-            adminActivity("product", get_class($product), $product->id, "Try the product update but failed for: " . $ex->getMessage());
+
+            // Log comprehensive error details
+            Log::error('Product Update Failed', [
+                'error_message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'stack_trace' => $e->getTraceAsString(),
+                'request_payload' => $request->all(),
+                'user_id' => $user->id ?? null,
+                'product_id' => $id ?? null,
+            ]);
+
+            $message[] = $e->getMessage();
+            adminActivity("product", get_class($product), $product->id ?? null, "Try the product update but failed for: " . $e->getMessage());
             return jsonResponse('exception', 'error', $message);
         }
 
