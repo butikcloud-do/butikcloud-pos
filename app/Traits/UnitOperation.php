@@ -27,10 +27,8 @@ trait UnitOperation
     public function save(Request $request, $id = 0)
     {
         $request->validate([
-            //  'name'       => ['required', 'string', 'max:40', Rule::unique('units', 'name')->where('user_id', getParentUser()->id)->ignore($id)],
-            // 'short_name' => ['required', 'string', 'max:40', Rule::unique('units', 'short_name')->where('user_id', getParentUser()->id)->ignore($id)],
-            'name'       => ['required', 'string', 'max:40', Rule::unique('units', 'name')->where('user_id', getParentUser()->id)->whereNull('deleted_at')->ignore($id)],
-            'short_name' => ['required', 'string', 'max:40', Rule::unique('units', 'short_name')->where('user_id', getParentUser()->id)->whereNull('deleted_at')->ignore($id)],
+             'name'       => ['required', 'string', 'max:40', Rule::unique('units', 'name')->where('user_id', getParentUser()->id)->ignore($id)],
+            'short_name' => ['required', 'string', 'max:40', Rule::unique('units', 'short_name')->where('user_id', getParentUser()->id)->ignore($id)],
         ]);
 
         $user = getParentUser();

@@ -34,8 +34,7 @@ trait BrandOperation
                 'required',
                 'string',
                 'max:40',
-                //  Rule::unique('brands', 'name')->where('user_id', $user->id)->ignore($id),
-                Rule::unique('brands', 'name')->where('user_id', $user->id)->whereNull('deleted_at')->ignore($id),
+                 Rule::unique('brands', 'name')->where('user_id', $user->id)->ignore($id),
             ],
             'image' => ['nullable', 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
         ]);
