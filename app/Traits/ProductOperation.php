@@ -321,7 +321,7 @@ trait ProductOperation
             'product_detail'                  => 'required|array|min:1',
             "product_detail.*.id"             => "nullable|exists:product_details,id",
             //  "product_detail.*.sku"            => ["nullable", Rule::unique('product_details', 'sku')->where('user_id', getParentUser()->id)->ignore($id)],
-            "product_detail.*.sku"            => ["nullable", Rule::unique('product_details', 'sku')->where('user_id', getParentUser()->id)->whereNull('deleted_at')->ignore($id)],
+            "product_detail.*.sku"            => ["nullable", Rule::unique('product_details', 'sku')->where('user_id', getParentUser()->id)->ignore($id)],
             
             "product_detail.*.base_price"     => "required|numeric|gt:0",
             "product_detail.*.tax_id"         => "nullable|integer|exists:taxes,id",
