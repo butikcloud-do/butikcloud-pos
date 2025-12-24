@@ -32,7 +32,7 @@ trait CategoryOperation
     public function save(Request $request, $id = 0)
     {
         $request->validate([
-             'name' => ['required', 'string', 'max:40', Rule::unique('categories', 'name')->where('user_id', getParentUser()->id)->ignore($id)],
+             'name' => ['required', 'string', 'max:40', Rule::unique('categories', 'name')->where('user_id', getParentUser()->id)->whereNull('deleted_at')->ignore($id)],
             'image' => ['nullable', 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
         ]);
 
