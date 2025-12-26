@@ -160,6 +160,14 @@ trait PurchaseOperation
             $purchase->total           = $total;
             $purchase->status          = $request->status;
 
+            // Calculate due amount: Total - Paid Amount (never negative)
+            $paidAmount = $request->paid_amount ?? 0;
+            $dueAmount = max(0, $total - $paidAmount);
+            $purchase->due_amount = $dueAmount;
+
+            // Set due date
+            $purchase->due_date = $request->due_date ? now()->parse($request->due_date)->format('Y-m-d') : null;
+
             if ($request->hasFile('attachment')) {
                 try {
                     $purchase->attachment = fileUploader($request->attachment, getFilePath("purchase_attachment"));
@@ -274,6 +282,14 @@ trait PurchaseOperation
             $purchase->subtotal        = $subtotal;
             $purchase->total           = $total;
             $purchase->status          = $request->status;
+
+            // Calculate due amount: Total - Paid Amount (never negative)
+            $paidAmount = $request->paid_amount ?? 0;
+            $dueAmount = max(0, $total - $paidAmount);
+            $purchase->due_amount = $dueAmount;
+
+            // Set due date
+            $purchase->due_date = $request->due_date ? now()->parse($request->due_date)->format('Y-m-d') : null;
 
             if ($request->hasFile('attachment')) {
                 try {
@@ -511,6 +527,8 @@ trait PurchaseOperation
             'paid_date'                             => 'required_with:paid_amount',
             'payment_type'                          => 'required_with:paid_amount',
             'payment_note'                          => 'nullable|string',
+            'due_amount'                            => 'nullable|numeric|gte:0',
+            'due_date'                              => 'nullable|date|after_or_equal:today',
 
             'purchase_details'                      => 'required|array|min:1',
             "purchase_details.*.product_details_id" => "required|exists:product_details,id",
