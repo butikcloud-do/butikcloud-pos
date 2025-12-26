@@ -350,6 +350,7 @@
 
                 const unitPrice = parseFloat($pricingDetailsModal.find(".details-unit-price").text() || 0);
                 var discountAmount = 0;
+                let isValid = true;
 
                 if (discountValue > 0) {
                     if (discountType == discountTypePercent) {
@@ -359,16 +360,30 @@
                     }
                 }
 
-                if (unitPrice < discountAmount) {
-                    notify("error", "@lang('Discount value must be less than unit price')");
-                    discountAmount = unitPrice;
+                if (unitPrice < discountAmount || discountValue < 0) {
+                    isValid = false;
+                    notify("error", "@lang('Discount value must be less than unit price and cannot be negative')");
+                    discountAmount = Math.min(discountAmount, unitPrice);
                 }
-                const salePrice = unitPrice - discountAmount;
+
+                const salePrice = Math.max(0, unitPrice - discountAmount);
                 $pricingDetailsModal.find(".details-sale-price").text(showAmount(salePrice));
+
+                // Enable/disable update button based on validity
+                const $updateBtn = $pricingDetailsModal.find('.update-discount');
+                if (isValid) {
+                    $updateBtn.prop('disabled', false).removeClass('disabled');
+                } else {
+                    $updateBtn.prop('disabled', true).addClass('disabled');
+                }
             }
 
             //details discount change handler
             $("#pricing-details-modal").on('click', ".update-discount", function() {
+                // Prevent update if button is disabled (invalid discount)
+                if ($(this).prop('disabled')) {
+                    return false;
+                }
 
                 const discountType = $pricingDetailsModal.find('.details-discount-type').val();
                 const discountValue = $pricingDetailsModal.find('.details-discount-value').val();

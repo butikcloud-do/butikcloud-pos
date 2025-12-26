@@ -73,7 +73,7 @@
                     </div>
                     <div class="form-group col-lg-6">
                         <label>@lang('Email')</label>
-                        <input type="email" class="form-control" name="email" required value="{{ old('email') }}">
+                        <input type="email" class="form-control" name="email" value="{{ old('email') }}">
                     </div>
                     <div class="form-group col-lg-6">
                         <label>@lang('Mobile')</label>

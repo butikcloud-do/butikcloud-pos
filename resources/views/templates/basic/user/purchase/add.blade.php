@@ -203,6 +203,26 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="form-group col-lg-6">
+                                <label>@lang('Due Amount')</label>
+                                <div class="input-group input--group">
+                                    <input type="text" class="form-control due-amount" name="due_amount"
+                                        placeholder="@lang('0.00')" readonly>
+                                    <span class="input-group-text">
+                                        {{ __(gs('cur_text', getParentUser()->id)) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label>@lang('Due Date')</label>
+                                <div class="input-group input--group">
+                                    <input type="text" class="form-control date-picker due-date-picker" name="due_date"
+                                        value="{{ date('Y-m-d', strtotime('+1 day')) }}">
+                                    <span class="input-group-text">
+                                        <i class="las la-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
                             <div class="form-group col-lg-12">
                                 <label>@lang('Payment Type')</label>
                                 <select name="payment_type" class="form-control select2 payment-type">
@@ -278,6 +298,16 @@
             //purchase discount type change calculation
             $(".purchase-discount-type").on('change', function() {
                 calculationManager.totalCalculation();
+            });
+
+            //due amount calculation when paid amount changes
+            $('input[name="paid_amount"]').on('input change', function() {
+                calculationManager.calculateDueAmount();
+            });
+
+            //due amount calculation when total changes
+            $(document).on('totalCalculated', function() {
+                calculationManager.calculateDueAmount();
             });
 
 
@@ -598,6 +628,9 @@
                     $('.purchase-discount-text').text(getAmount(getDiscountAmount));
                     $('.shipping-amount-text').text(shippingAmount);
                     $('.total-text').text(getAmount(total));
+
+                    // Trigger due amount calculation
+                    $(document).trigger('totalCalculated');
                 },
                 /**
                  * Retrieves tax-related details based on the base price.
@@ -638,6 +671,17 @@
                     return discountAmount;
 
                 },
+
+                /**
+                 * Calculate and update the due amount field
+                 */
+                calculateDueAmount: function() {
+                    const total = parseFloat($('.total-text').text().replace(/,/g, '')) || 0;
+                    const paidAmount = parseFloat($('input[name="paid_amount"]').val()) || 0;
+                    const dueAmount = Math.max(0, total - paidAmount);
+                    $('.due-amount').val(getAmount(dueAmount));
+                },
+
                 /**
                  * Retrieves the base price from the UI.
                  *
@@ -750,9 +794,25 @@
                 return selected ? 'selected' : '';
             }
 
-            $(".date-picker").flatpickr({
+            // Initialize regular date pickers (paid date)
+            $(".date-picker:not(.due-date-picker)").flatpickr({
                 maxDate: new Date()
             });
+
+            // Initialize due date picker with restrictions
+            $(".due-date-picker").flatpickr({
+                minDate: new Date().fp_incr(1), // Tomorrow and later
+                defaultDate: new Date().fp_incr(1), // Default to tomorrow
+                disable: [
+                    function(date) {
+                        // Disable today and all past dates
+                        return date < new Date().fp_incr(1);
+                    }
+                ]
+            });
+
+            // Initialize due amount calculation
+            calculationManager.calculateDueAmount();
 
             //get product if request has product code
             @if (request()->product_code)

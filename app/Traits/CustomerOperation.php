@@ -30,12 +30,13 @@ trait CustomerOperation
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => [
-                'required',
+                'nullable',
                 'string',
                 'email',
                 'max:255',
                 Rule::unique('customers', 'email')
                     ->where(fn($query) => $query->where('user_id', $parentId))
+                    ->when($request->email, fn($query) => $query->whereNotNull('email'))
                     ->ignore($id),
             ],
             'mobile'   => [

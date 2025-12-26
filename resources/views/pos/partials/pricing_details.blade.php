@@ -58,3 +58,14 @@
     </ul>
 </div>
 
+<div class="form-group">
+    <div class="d-flex flex-wrap gap-2 justify-content-end">
+        <button type="button" class="btn btn--secondary btn-large" data-bs-dismiss="modal">
+            <i class="fa-regular fa-times-circle"></i> @lang('Close')
+        </button>
+        <button type="button" class="btn btn--primary btn-large update-discount" data-id="{{ $product->id }}">
+            <i class="fa-regular fa-check-circle"></i> @lang('Update')
+        </button>
+    </div>
+</div>
+
