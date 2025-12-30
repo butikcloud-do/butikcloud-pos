@@ -97,14 +97,14 @@
                                     <tr>
                                         <th>@lang('Product')</th>
                                         <th>@lang('Qty')</th>
-                                        <th>@lang('Base Price')</th>
+                                        <th>@lang('Base Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</th>
                                         <th>@lang('Tax')</th>
-                                        <th>@lang('Purchase Price')</th>
-                                        <th>@lang('Subtotal')</th>
-                                        <th>@lang('Profit Margin')</th>
-                                        <th>@lang('Sale Price')</th>
+                                        <th>@lang('Purchase Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</th>
+                                        <th>@lang('Subtotal') ({{ __(gs('cur_sym', getParentUser()->id)) }})</th>
+                                        <th>@lang('Profit Margin') (%)</th>
+                                        <th>@lang('Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</th>
                                         <th>@lang('Sale Discount')</th>
-                                        <th>@lang('Final Sale Price')</th>
+                                        <th>@lang('Final Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -133,15 +133,10 @@
                                                     type="hidden">
                                             </td>
                                             <td class="mw-120 px-1">
-                                                <div class="input--group input-group">
-                                                    <span class="input-group-text">
-                                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                                    </span>
-                                                    <input class="form-control base-price"
-                                                        value="{{ getAmount($purchaseDetail->base_price) }}"
-                                                        name="purchase_details[{{$k}}][base_price]"
-                                                        type="number" step="any">
-                                                </div>
+                                                <input class="form-control base-price"
+                                                    value="{{ getAmount($purchaseDetail->base_price) }}"
+                                                    name="purchase_details[{{$k}}][base_price]"
+                                                    type="number" step="any">
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-1">
@@ -182,46 +177,26 @@
                                                 </div>
                                             </td>
                                             <td class="mw-110 px-1">
-                                                <div class="input--group input-group">
-                                                    <span class="input-group-text">
-                                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                                    </span>
-                                                    <input name="purchase_details[{{ $k }}][purchase_price]"
-                                                        type="number" step="any"
-                                                        class="form-control mw-150 purchase-price" readonly
-                                                        value="{{ getAmount($purchaseDetail->purchase_price) }}">
-                                                </div>
+                                                <input name="purchase_details[{{ $k }}][purchase_price]"
+                                                    type="number" step="any"
+                                                    class="form-control mw-150 purchase-price" readonly
+                                                    value="{{ getAmount($purchaseDetail->purchase_price) }}">
                                             </td>
                                             <td class="mw-90 px-1">
-                                                <div class="input--group input-group">
-                                                    <span class="input-group-text">
-                                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                                    </span>
-                                                    <input readonly class="form-control subtotal"
-                                                        value="{{ getAmount($purchaseDetail->purchase_price * $purchaseDetail->quantity) }}">
-                                                </div>
+                                                <input readonly class="form-control subtotal"
+                                                    value="{{ getAmount($purchaseDetail->purchase_price * $purchaseDetail->quantity) }}">
                                             </td>
                                             <td class="mw-110 px-1">
-                                                <div>
-                                                    <div class="input--group input-group">
-                                                        <input class="form-control profit-margin"
-                                                            value="{{ getAmount($purchaseDetail->profit_margin) }}"
-                                                            name="purchase_details[{{ $k }}][profit_margin]">
-                                                        <span class="input-group-text">
-                                                            %
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                <input class="form-control profit-margin"
+                                                    value="{{ getAmount($purchaseDetail->profit_margin) }}"
+                                                    name="purchase_details[{{ $k }}][profit_margin]"
+                                                    type="number" step="any">
                                             </td>
                                             <td class="mw-110 px-1">
-                                                <div class="input--group input-group">
-                                                    <span class="input-group-text">
-                                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                                    </span>
-                                                    <input class="form-control sale-price"
-                                                        value="{{ getAmount($purchaseDetail->sale_price) }}"
-                                                        name="purchase_details[{{ $k }}][sale_price]">
-                                                </div>
+                                                <input class="form-control sale-price"
+                                                    value="{{ getAmount($purchaseDetail->sale_price) }}"
+                                                    name="purchase_details[{{ $k }}][sale_price]"
+                                                    type="number" step="any">
                                             </td>
                                             <td class="mw-110 px-1">
                                                 <div class="input-group input--group">
@@ -245,17 +220,13 @@
                                                 </div>
                                             </td>
                                             <td class="mw-110 px-1">
-                                                <div class="input--group input-group">
-                                                    <span class="input-group-text">
-                                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                                    </span>
+                                                <div class="input-group">
                                                     <input type="number" step="any"
                                                         class="form-control mw-150 final-sale-price"
                                                         name="purchase_details[{{ $k }}][final_sale_price]"
                                                         readonly value="{{ getAmount($purchaseDetail->final_price) }}">
-
                                                     <button type="button"
-                                                        class="input-group-text btn btn--danger confirmationBtn"
+                                                        class="btn btn--danger confirmationBtn"
                                                         data-question="@lang('Are you sure to remove this item')?"
                                                         data-action="{{ route('user.purchase.remove.single.item', $purchaseDetail->id) }}">
                                                         <i class="las la-times"></i>
@@ -497,12 +468,7 @@
                                 <input  value="${productDetail.id}" name="purchase_details[${length}][product_details_id]" type="hidden" >
                             </td>
                             <td class="mw-90 px-1">
-                                <div class="input--group input-group">
-                                     <span class="input-group-text">
-                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                    </span>
-                                    <input class="form-control base-price" value="${getAmount(productDetail.base_price)}" name="purchase_details[${length}][base_price]" type="number" step="any">
-                                </div>
+                                <input class="form-control base-price" value="${getAmount(productDetail.base_price)}" name="purchase_details[${length}][base_price]" type="number" step="any">
                             </td>
                             <td>
                                 <div class="d-flex gap-1">
@@ -521,37 +487,17 @@
                                 </div
                             </td>
                              <td class="mw-110 px-1">
-                                 <div class="input--group input-group">
-                                    <span class="input-group-text">
-                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                    </span>
-                                    <input readonly class="form-control purchase-price" value="${getAmount(productDetail.purchase_price)}" name="purchase_details[${length}][purchase_price]">
-                                </div>
-                            </td>
+                                 <input readonly class="form-control purchase-price" value="${getAmount(productDetail.purchase_price)}" name="purchase_details[${length}][purchase_price]">
+                             </td>
                              <td class="mw-90 px-1">
-                                 <div class="input--group input-group">
-                                    <span class="input-group-text">
-                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                    </span>
-                                    <input readonly class="form-control subtotal" value="${getAmount(productDetail.purchase_price)}">
-                                </div>
-                            </td>
+                                 <input readonly class="form-control subtotal" value="${getAmount(productDetail.purchase_price)}">
+                             </td>
                              <td class="mw-110 px-1">
-                                <div>
-                                    <div class="input--group input-group">
-                                        <input class="form-control profit-margin" value="${getAmount(productDetail.profit_margin)}" name="purchase_details[${length}][profit_margin]" type="number" step="any">
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                </div>
-                            </td>
+                                <input class="form-control profit-margin" value="${getAmount(productDetail.profit_margin)}" name="purchase_details[${length}][profit_margin]" type="number" step="any">
+                             </td>
                              <td class="mw-110 px-1">
-                                <div class="input--group input-group">
-                                    <span class="input-group-text">
-                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                    </span>
-                                    <input class="form-control sale-price" value="${getAmount(productDetail.sale_price)}" name="purchase_details[${length}][sale_price]">
-                                </div>
-                            </td>
+                                <input class="form-control sale-price" value="${getAmount(productDetail.sale_price)}" name="purchase_details[${length}][sale_price]" type="number" step="any">
+                             </td>
                              <td class="mw-110 px-1">
                                 <div class="input-group input--group">
                                     <span class="input-group-text">
@@ -565,14 +511,11 @@
                                 </div>
                             </td>
                              <td class="mw-110 px-1">
-                                 <div class="input--group input-group">
-                                    <span class="input-group-text">
-                                        {{ __(gs('cur_sym', getParentUser()->id)) }}
-                                    </span>
-                                    <input class="form-control final-sale-price" value="${getAmount(productDetail.final_price)}" name="purchase_details[${length}][final_sale_price]">
-                                    <span class="input-group-text btn btn--danger remove-btn" data-id="${productDetail.id}">
+                                 <div class="input-group">
+                                    <input class="form-control final-sale-price" value="${getAmount(productDetail.final_price)}" name="purchase_details[${length}][final_sale_price]" type="number" step="any">
+                                    <button type="button" class="btn btn--danger remove-btn" data-id="${productDetail.id}">
                                         <i class="las la-times"></i>
-                                    </span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>`

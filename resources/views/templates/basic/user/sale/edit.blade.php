@@ -76,12 +76,12 @@
                                 <thead>
                                     <tr>
                                         <th>@lang('Product')</th>
-                                        <th>@lang('Unit Price')</th>
-                                        <th>@lang('Tax Amount')</th>
+                                        <th>@lang('Unit Price') ({{ gs('cur_sym', getParentUser()->id) }})</th>
+                                        <th>@lang('Tax Amount') ({{ gs('cur_sym', getParentUser()->id) }})</th>
                                         <th>@lang('Discount')</th>
-                                        <th>@lang('Sale Price')</th>
+                                        <th>@lang('Sale Price') ({{ gs('cur_sym', getParentUser()->id) }})</th>
                                         <th>@lang('Quantity')</th>
-                                        <th>@lang('Subtotal')</th>
+                                        <th>@lang('Subtotal') ({{ gs('cur_sym', getParentUser()->id) }})</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -118,20 +118,12 @@
                                                     value="{{ $saleDetails->id }}" type="hidden" />
                                             </td>
                                             <td>
-                                                <div class="input-group input--group">
-                                                    <span
-                                                        class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
-                                                    <input value="{{ getAmount($saleDetails->unit_price) }}" readonly
-                                                        class="form-control" />
-                                                </div>
+                                                <input value="{{ getAmount($saleDetails->unit_price) }}" readonly
+                                                    class="form-control" />
                                             </td>
                                             <td>
-                                                <div class="input-group input--group">
-                                                    <span
-                                                        class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
-                                                    <input value="{{ getAmount($saleDetails->tax_amount) }}" readonly
-                                                        class="form-control" />
-                                                </div>
+                                                <input value="{{ getAmount($saleDetails->tax_amount) }}" readonly
+                                                    class="form-control" />
                                             </td>
                                             <td>
                                                 <div class="input-group input--group">
@@ -156,15 +148,11 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="input-group input--group">
-                                                    <span
-                                                        class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
-                                                    <input value="{{ getAmount($saleDetails->sale_price) }}" readonly
-                                                        class="form-control sale-price" />
-                                                    <input type="hidden"
-                                                        value="{{ getAmount($saleDetails->unit_price + $saleDetails->tax_amount) }}"
-                                                        readonly class="form-control unit-price " />
-                                                </div>
+                                                <input value="{{ getAmount($saleDetails->sale_price) }}" readonly
+                                                    class="form-control sale-price" />
+                                                <input type="hidden"
+                                                    value="{{ getAmount($saleDetails->unit_price + $saleDetails->tax_amount) }}"
+                                                    readonly class="form-control unit-price " />
                                             </td>
                                             <td>
                                                 <div class="input-group input--group">
@@ -176,13 +164,11 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="input-group input--group">
-                                                    <span
-                                                        class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
+                                                <div class="input-group">
                                                     <input value="{{ getAmount($saleDetails->subtotal) }}" readonly
                                                         class="form-control sub-total" />
                                                     <button type="button"
-                                                        class="input-group-text btn btn--danger confirmationBtn"
+                                                        class="btn btn--danger confirmationBtn"
                                                         data-question="@lang('Are you sure to remove this item')?"
                                                         data-action="{{ route('user.sale.remove.single.item', $saleDetails->id) }}">
                                                         <i class="las la-times"></i>
@@ -458,16 +444,10 @@
 
                             </td>
                             <td>
-                                <div class="input-group input--group">
-                                    <span class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
-                                    <input value="${getAmount(productDetail.sale_price - productDetail.tax_amount )}"  readonly class="form-control"/>
-                                </div>
+                                <input value="${getAmount(productDetail.sale_price - productDetail.tax_amount )}"  readonly class="form-control"/>
                             </td>
                             <td>
-                                <div class="input-group input--group">
-                                    <span class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
-                                    <input value="${getAmount(productDetail.tax_amount)} - ${getAmount(productDetail.tax_percentage)}%"  readonly class="form-control"/>
-                                </div>
+                                <input value="${getAmount(productDetail.tax_amount)} - ${getAmount(productDetail.tax_percentage)}%"  readonly class="form-control"/>
                             </td>
                             <td>
                                 <div class="input-group input--group">
@@ -482,11 +462,8 @@
                                 </div>
                             </td>
                              <td>
-                                <div class="input-group input--group">
-                                    <span class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
-                                    <input value="${getAmount(productDetail.final_price)}"  readonly class="form-control sale-price"/>
-                                    <input type="hidden" value="${getAmount(productDetail.sale_price)}"  readonly class="form-control unit-price"/>
-                                </div>
+                                <input value="${getAmount(productDetail.final_price)}"  readonly class="form-control sale-price"/>
+                                <input type="hidden" value="${getAmount(productDetail.sale_price)}"  readonly class="form-control unit-price"/>
                             </td>
                              <td>
                                 <div class="input-group input--group">
@@ -495,12 +472,11 @@
                                 </div>
                             </td>
                              <td>
-                                <div class="input-group input--group">
-                                    <span class="input-group-text">{{ gs('cur_sym', getParentUser()->id) }}</span>
+                                <div class="input-group">
                                     <input value="${getAmount(productDetail.final_price)}"  readonly class="form-control sub-total"/>
-                                    <span class="input-group-text btn btn--danger remove-btn" data-id="${productDetail.id}">
+                                    <button type="button" class="btn btn--danger remove-btn" data-id="${productDetail.id}">
                                         <i class="las la-times"></i>
-                                    </span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>`

@@ -125,16 +125,13 @@
                                             </div>
                                             <div class="d-flex gap-3 overflow-auto skelton-here">
                                                 <div class="form-group">
-                                                    <label class="form-label">@lang('Base Price')</label>
-                                                    <div class="input-group input--group">
-                                                        <input type="number" step="any" class="form-control mw-150 base-price"
-                                                            name="product_detail[{{ $k }}][base_price]"
-                                                            value="{{ getAmount($productDetail->base_price) }}">
-                                                        <input type="hidden"
-                                                            name="product_detail[{{ $k }}][id]"
-                                                            value="{{ $productDetail->id }}">
-                                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                    </div>
+                                                    <label class="form-label">@lang('Base Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</label>
+                                                    <input type="number" step="any" class="form-control mw-150 base-price"
+                                                        name="product_detail[{{ $k }}][base_price]"
+                                                        value="{{ getAmount($productDetail->base_price) }}">
+                                                    <input type="hidden"
+                                                        name="product_detail[{{ $k }}][id]"
+                                                        value="{{ $productDetail->id }}">
                                                 </div>
                                                 <div class="form-group flex-fill">
                                                     <label class="form-label">@lang('Tax')</label>
@@ -177,45 +174,36 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="form-label">
-                                                        @lang('Purchase Price')
+                                                        @lang('Purchase Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                                             title="{{ productTooltip()['purchase_price'] }}">
                                                             <i class="las la-info-circle"></i>
                                                         </span>
                                                     </label>
-                                                    <div class="input-group input--group">
-                                                        <input name="product_detail[{{ $k }}][purchase_price]"
-                                                            type="number" step="any"
-                                                            class="form-control mw-150 purchase-price" readonly
-                                                            value="{{ getAmount($productDetail->purchase_price) }}">
-                                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                    </div>
+                                                    <input name="product_detail[{{ $k }}][purchase_price]"
+                                                        type="number" step="any"
+                                                        class="form-control mw-150 purchase-price" readonly
+                                                        value="{{ getAmount($productDetail->purchase_price) }}">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="form-label">@lang('Profit Margin')</label>
-                                                    <div class="input-group input--group">
-                                                        <input type="number" step="any"
-                                                            class="form-control mw-150 profit-margin"
-                                                            name="product_detail[{{ $k }}][profit_margin]"
-                                                            value="{{ getAmount($productDetail->profit_margin) }}">
-                                                        <span class="input-group-text">@lang('%')</span>
-                                                    </div>
+                                                    <label class="form-label">@lang('Profit Margin') (%)</label>
+                                                    <input type="number" step="any"
+                                                        class="form-control mw-150 profit-margin"
+                                                        name="product_detail[{{ $k }}][profit_margin]"
+                                                        value="{{ getAmount($productDetail->profit_margin) }}">
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="form-label">
-                                                        @lang('Sale Price')
+                                                        @lang('Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                                             title="{{ productTooltip()['sale_price'] }}">
                                                             <i class="las la-info-circle"></i>
                                                         </span>
                                                     </label>
-                                                    <div class="input-group input--group">
-                                                        <input type="number" step="any"
-                                                            class="form-control mw-150 sale-price"
-                                                            name="product_detail[{{ $k }}][sale_price]"
-                                                            value="{{ getAmount($productDetail->sale_price) }}">
-                                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                    </div>
+                                                    <input type="number" step="any"
+                                                        class="form-control mw-150 sale-price"
+                                                        name="product_detail[{{ $k }}][sale_price]"
+                                                        value="{{ getAmount($productDetail->sale_price) }}">
                                                 </div>
                                                 <div class="form-group flex-fill">
                                                     <label class="form-label">@lang('Discount')</label>
@@ -242,19 +230,16 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="form-label">
-                                                        @lang('Final Sale Price')
+                                                        @lang('Final Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                                             title="{{ productTooltip()['final_sale_price'] }}">
                                                             <i class="las la-info-circle"></i>
                                                         </span>
                                                     </label>
-                                                    <div class="input-group input--group">
-                                                        <input type="number" step="any"
-                                                            class="form-control mw-150 final-sale-price"
-                                                            name="product_detail[{{ $k }}][final_sale_price]"
-                                                            readonly value="{{ getAmount($productDetail->final_price) }}">
-                                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                    </div>
+                                                    <input type="number" step="any"
+                                                        class="form-control mw-150 final-sale-price"
+                                                        name="product_detail[{{ $k }}][final_sale_price]"
+                                                        readonly value="{{ getAmount($productDetail->final_price) }}">
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="form-label">@lang('Alert Qty')</label>

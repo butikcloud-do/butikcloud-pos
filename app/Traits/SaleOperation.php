@@ -101,8 +101,12 @@ trait SaleOperation
     public function removeSingleItem($id)
     {
         $user     = getParentUser();
-        $saleItem = SaleDetails::where('user_id', $user->id)->where("id", $id)->with("sale")->firstOrFailWithApi("SaleDetails");
-        $sale     = $saleItem->sale;
+        $saleItem = SaleDetails::where("id", $id)->firstOrFailWithApi("SaleDetails");
+        $sale     = Sale::where('id', $saleItem->sale_id)->where('user_id', $user->id)->first();
+
+        if (!$sale) {
+            return responseManager('not_found', 'The sale is not found');
+        }
 
         if (SaleDetails::where('sale_id', $sale->id)->count() <= 1) {
             return responseManager("error", "At least one item is required to perform this action.", 'error');

@@ -118,12 +118,9 @@
                                                     class="variant_id">
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">@lang('Base Price')</label>
-                                                <div class="input-group input--group">
-                                                    <input type="number" step="any" class="form-control  base-price"
-                                                        name="product_detail[0][base_price]">
-                                                    <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                </div>
+                                                <label class="form-label">@lang('Base Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</label>
+                                                <input type="number" step="any" class="form-control  base-price"
+                                                    name="product_detail[0][base_price]">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">@lang('Tax')</label>
@@ -163,42 +160,33 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">
-                                                    @lang('Purchase Price')
+                                                    @lang('Purchase Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                                     <span data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="{{ productTooltip()['purchase_price'] }}">
                                                         <i class="las la-info-circle"></i>
                                                     </span>
                                                 </label>
-                                                <div class="input-group input--group ">
-                                                    <input name="product_detail[0][purchase_price]" type="number"
-                                                        step="any" class="form-control  purchase-price"
-                                                        readonly>
-                                                    <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                </div>
+                                                <input name="product_detail[0][purchase_price]" type="number"
+                                                    step="any" class="form-control  purchase-price"
+                                                    readonly>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">@lang('Profit Margin')</label>
-                                                <div class="input-group input--group">
-                                                    <input type="number" step="any"
-                                                        class="form-control  profit-margin"
-                                                        name="product_detail[0][profit_margin]">
-                                                    <span class="input-group-text">@lang('%')</span>
-                                                </div>
+                                                <label class="form-label">@lang('Profit Margin') (%)</label>
+                                                <input type="number" step="any"
+                                                    class="form-control  profit-margin"
+                                                    name="product_detail[0][profit_margin]">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">
-                                                    @lang('Sale Price')
+                                                    @lang('Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                                     <span data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="{{ productTooltip()['sale_price'] }}">
                                                         <i class="las la-info-circle"></i>
                                                     </span>
                                                 </label>
-                                                <div class="input-group input--group">
-                                                    <input type="number" step="any"
-                                                        class="form-control  sale-price"
-                                                        name="product_detail[0][sale_price]">
-                                                    <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                </div>
+                                                <input type="number" step="any"
+                                                    class="form-control  sale-price"
+                                                    name="product_detail[0][sale_price]">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">@lang('Discount')</label>
@@ -220,18 +208,15 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">
-                                                    @lang('Final Sale Price')
+                                                    @lang('Final Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                                     <span data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="{{ productTooltip()['final_sale_price'] }}">
                                                         <i class="las la-info-circle"></i>
                                                     </span>
                                                 </label>
-                                                <div class="input-group input--group">
-                                                    <input type="number" step="any"
-                                                        class="form-control  final-sale-price"
-                                                        name="product_detail[0][final_sale_price]" readonly>
-                                                    <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                                </div>
+                                                <input type="number" step="any"
+                                                    class="form-control  final-sale-price"
+                                                    name="product_detail[0][final_sale_price]" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">@lang('Alert Qty')</label>
@@ -479,12 +464,9 @@
                                     <input type="hidden" name="product_detail[${productVariationsLength}][variant_id]" value="${variant.id}">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Base Price')</label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  base-price"
-                                            name="product_detail[${productVariationsLength}][base_price]">
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <label class="form-label">@lang('Base Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</label>
+                                    <input type="number" step="any" class="form-control  base-price"
+                                        name="product_detail[${productVariationsLength}][base_price]">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">@lang('Tax')</label>
@@ -523,39 +505,30 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">
-                                        @lang('Purchase Price')
+                                        @lang('Purchase Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ productTooltip()['purchase_price'] }}">
                                             <i class="las la-info-circle"></i>
                                         </span>
                                     </label>
-                                    <div class="input-group input--group">
-                                        <input name="product_detail[${productVariationsLength}][purchase_price]" type="number"
-                                            step="any" class="form-control  purchase-price" readonly>
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <input name="product_detail[${productVariationsLength}][purchase_price]" type="number"
+                                        step="any" class="form-control  purchase-price" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Profit Margin')</label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  profit-margin"
-                                            name="product_detail[${productVariationsLength}][profit_margin]">
-                                        <span class="input-group-text">@lang('%')</span>
-                                    </div>
+                                    <label class="form-label">@lang('Profit Margin') (%)</label>
+                                    <input type="number" step="any" class="form-control  profit-margin"
+                                        name="product_detail[${productVariationsLength}][profit_margin]">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">
-                                        @lang('Sale Price')
+                                        @lang('Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="@lang('Sale Price = Purchase Price + Profit Margin')">
                                             <i class="las la-info-circle"></i>
                                         </span>
                                     </label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  sale-price"
-                                            name="product_detail[${productVariationsLength}][sale_price]">
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <input type="number" step="any" class="form-control  sale-price"
+                                        name="product_detail[${productVariationsLength}][sale_price]">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">@lang('Discount')</label>
@@ -575,17 +548,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">
-                                        @lang('Final Sale Price')
+                                        @lang('Final Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ productTooltip()['final_sale_price'] }}">
                                             <i class="las la-info-circle"></i>
                                         </span>
                                     </label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  final-sale-price"
-                                            name="product_detail[${productVariationsLength}][final_sale_price]" readonly>
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <input type="number" step="any" class="form-control  final-sale-price"
+                                        name="product_detail[${productVariationsLength}][final_sale_price]" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">@lang('Alert Qty')</label>
@@ -627,12 +597,9 @@
                                                     class="variant_id">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Base Price')</label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  base-price"
-                                            name="product_detail[0][base_price]">
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <label class="form-label">@lang('Base Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})</label>
+                                    <input type="number" step="any" class="form-control  base-price"
+                                        name="product_detail[0][base_price]">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">@lang('Tax')</label>
@@ -671,39 +638,30 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">
-                                        @lang('Purchase Price')
+                                        @lang('Purchase Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ productTooltip()['purchase_price'] }}">
                                             <i class="las la-info-circle"></i>
                                         </span>
                                     </label>
-                                    <div class="input-group input--group">
-                                        <input name="product_detail[0][purchase_price]" type="number"
-                                            step="any" class="form-control  purchase-price" readonly>
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <input name="product_detail[0][purchase_price]" type="number"
+                                        step="any" class="form-control  purchase-price" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Profit Margin')</label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  profit-margin"
-                                            name="product_detail[0][profit_margin]">
-                                        <span class="input-group-text">@lang('%')</span>
-                                    </div>
+                                    <label class="form-label">@lang('Profit Margin') (%)</label>
+                                    <input type="number" step="any" class="form-control  profit-margin"
+                                        name="product_detail[0][profit_margin]">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">
-                                        @lang('Sale Price')
+                                        @lang('Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ productTooltip()['sale_price'] }}">
                                             <i class="las la-info-circle"></i>
                                         </span>
                                     </label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  sale-price"
-                                            name="product_detail[0][sale_price]">
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <input type="number" step="any" class="form-control  sale-price"
+                                        name="product_detail[0][sale_price]">
                                 </div>
                                 <div class="form-group flex-fill">
                                     <label class="form-label">@lang('Discount')</label>
@@ -722,17 +680,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">
-                                        @lang('Final Sale Price')
+                                        @lang('Final Sale Price') ({{ __(gs('cur_sym', getParentUser()->id)) }})
                                         <span data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="@lang('Final Sale Price = Sale Price - Discount')">
                                             <i class="las la-info-circle"></i>
                                         </span>
                                     </label>
-                                    <div class="input-group input--group">
-                                        <input type="number" step="any" class="form-control  final-sale-price"
-                                            name="product_detail[0][final_sale_price]" readonly>
-                                        <span class="input-group-text">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
-                                    </div>
+                                    <input type="number" step="any" class="form-control  final-sale-price"
+                                        name="product_detail[0][final_sale_price]" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">@lang('Alert Qty')</label>
