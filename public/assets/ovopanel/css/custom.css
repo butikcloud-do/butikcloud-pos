@@ -176,7 +176,7 @@
         display: block !important;
     }
 
-    .invoice-customer-info__item ,
+    .invoice-customer-info__item,
     .invoice-pricing-info__item,
     .invoice-payment-info__item,
     .invoice-pricing-info__item.total,
@@ -188,17 +188,27 @@
 
     }
 
-    .invoice-info__item .value ,
+    .invoice-info__item .value,
     .invoice-pricing-info__item.total {
         color: #323234;
 
     }
-    h1, h2, h3, h4, h5, h6{
-        color: #323234;;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #323234;
+        ;
     }
-    .invoice-table thead > tr > th, .invoice-table tbody > tr > td {
+
+    .invoice-table thead>tr>th,
+    .invoice-table tbody>tr>td {
         border-color: rgba(0, 0, 0, 0.1) !important;
     }
+
     .invoice-table-responsive {
         border: 1px solid rgba(0, 0, 0, 0.1) !important;
     }
@@ -208,37 +218,399 @@
     }
 
 }
+
 .pos-invoice .item-list th {
     white-space: nowrap;
 }
+
 .pos-invoice .item-list td {
     font-size: 10px;
 }
 
+/* =============================================
+   Cell Layout and Alignment Fix
+   Scope: 
+   1. Product Details (horizontal flex layout)
+   2. Selected Product (table layout)
+   Purpose: 
+   - Fix cell overflow issues
+   - Prevent header text merging
+   - Fix dropdown overflow
+   - Maintain proper spacing
+   ============================================= */
+
+/* =============================================
+   SECTION 1: Product Details Flex Layout Fix
+   (.single-product-variation-row .d-flex)
+   ============================================= */
+
+/* Container for horizontal scrolling - INCREASED GAP */
+.single-product-variation-row>.d-flex {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 10px;
+    gap: 20px !important;
+}
+
+/* Each form group in the flex layout - UNIFORM WIDTH 160px */
+.single-product-variation-row>.d-flex>.form-group {
+    flex: 0 0 auto !important;
+    min-width: 160px;
+    width: 160px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Tax field form group - UNIFIED WIDTH */
+/* Dropping specific width to maintain uniformity as requested */
+.single-product-variation-row>.d-flex>.form-group:has(.d-flex.gap-1) {
+    min-width: 160px;
+    width: 160px;
+}
+
+/* Discount field form group - UNIFIED WIDTH */
+.single-product-variation-row>.d-flex>.form-group:has(.input-group) {
+    min-width: 160px;
+    width: 160px;
+    overflow: hidden;
+}
+
+/* Labels in the Product Details flex layout - PREVENT MERGING */
+.single-product-variation-row .form-label {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    max-width: 100%;
+    padding-right: 5px;
+}
+
+/* Form controls in the Product Details section */
+.single-product-variation-row .form-control {
+    min-width: 90px;
+    max-width: 100%;
+    width: 100%;
+}
+
+/* Form select dropdowns */
+.single-product-variation-row .form-select {
+    min-width: 60px;
+    max-width: 100%;
+    width: 100%;
+}
+
+/* Tax field with two dropdowns - container */
+.single-product-variation-row .form-group .d-flex.gap-1 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    width: 100%;
+}
+
+/* Tax field - each dropdown */
+.single-product-variation-row .form-group .d-flex.gap-1>.flex-fill {
+    flex: 1 1 50%;
+    min-width: 0;
+    max-width: 50%;
+}
+
+.single-product-variation-row .form-group .d-flex.gap-1 .form-control,
+.single-product-variation-row .form-group .d-flex.gap-1 .form-select {
+    min-width: 50px;
+    width: 100%;
+}
+
+/* Input group for discount field - PREVENT OVERFLOW */
+.single-product-variation-row .input-group {
+    min-width: 100px;
+    max-width: 100%;
+    flex-wrap: nowrap !important;
+    width: 100%;
+}
+
+.single-product-variation-row .input-group .form-control {
+    flex: 1 1 60%;
+    min-width: 50px;
+    max-width: 60%;
+}
+
+/* Discount dropdown - CONTAINED WITHIN CELL */
+.single-product-variation-row .input-group .form-select,
+.single-product-variation-row .input-group select {
+    flex: 0 0 40%;
+    min-width: 50px;
+    max-width: 40%;
+    width: auto;
+}
+
+.single-product-variation-row .input-group .input-group-text {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    max-width: 50px;
+}
+
+/* Scrollbar styling for the horizontal scroll */
+.single-product-variation-row>.d-flex::-webkit-scrollbar {
+    height: 6px;
+}
+
+.single-product-variation-row>.d-flex::-webkit-scrollbar-track {
+    background: hsl(var(--light));
+    border-radius: 3px;
+}
+
+.single-product-variation-row>.d-flex::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+    border-radius: 3px;
+}
+
+.single-product-variation-row>.d-flex::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.5);
+}
+
+/* =============================================
+   SECTION 2: Selected Product Table Layout Fix
+   (.product-table.table)
+   ============================================= */
+
+/* Fix table layout to ensure consistent column alignment */
+.product-table.table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* When inside table-responsive, allow expansion */
+.table-responsive .product-table.table {
+    table-layout: auto;
+    width: max-content;
+    min-width: 100%;
+}
+
+/* Base table header and cell styles - ENSURE ALIGNMENT */
 .product-table.table th,
 .product-table.table td {
     white-space: nowrap !important;
+    vertical-align: middle;
+    padding: 10px 12px;
+    text-align: left;
 }
+
+/* Ensure header text stays on a single line - NO TRUNCATION */
+.product-table.table thead th {
+    white-space: nowrap !important;
+    overflow: visible;
+    line-height: 1.4;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Consistent column widths for alignment */
+.product-table.table th,
+.product-table.table td {
+    min-width: 110px;
+}
+
+/* Product name column - wider */
+.product-table.table th:first-child,
+.product-table.table td:first-child {
+    min-width: 130px;
+}
+
+/* Subtotal column - ensure proper alignment */
+.product-table.table th:last-child,
+.product-table.table td:last-child {
+    min-width: 120px;
+    text-align: left;
+}
+
+/* Ensure proper alignment for input fields */
+.product-table.table td .form-control {
+    min-width: unset !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* Input group - CONTAINED within cell */
+.product-table.table td .input-group {
+    min-width: 100px;
+    max-width: 100%;
+    flex-wrap: nowrap !important;
+    display: inline-flex;
+    width: auto;
+}
+
+/* Input inside input-group */
+.product-table.table td .input-group .form-control {
+    flex: 1 1 auto;
+    min-width: 50px;
+    width: auto;
+}
+
+/* Input group text (unit name) */
+.product-table.table td .input-group .input-group-text {
+    flex: 0 0 auto;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+/* Prevent vertical layout shifts from header height changes */
+.product-table.table thead {
+    height: auto;
+}
+
+/* =============================================
+   SECTION 3: Responsive Adjustments
+   ============================================= */
 
 @media screen and (max-width: 1366px) {
+
+    /* Product Details flex layout */
+    .single-product-variation-row>.d-flex {
+        gap: 18px !important;
+    }
+
+    /* Uniform width for responsive */
+    /* Uniform width for responsive - Base Columns */
+    .single-product-variation-row>.d-flex>.form-group {
+        min-width: 140px;
+        width: 140px;
+    }
+
+    /* Wider width for Tax and Discount on Laptop */
+    .single-product-variation-row>.d-flex>.form-group:has(.d-flex.gap-1),
+    .single-product-variation-row>.d-flex>.form-group:has(.input-group) {
+        min-width: 190px;
+        width: 190px;
+    }
+
+    .single-product-variation-row .form-label {
+        font-size: 11px;
+    }
+
+    .single-product-variation-row .form-control {
+        min-width: 80px;
+    }
+
+    /* Selected Product table */
+    .product-table.table th,
     .product-table.table td {
-        min-width: 180px;
+        min-width: 100px;
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .product-table.table th:first-child,
+    .product-table.table td:first-child {
+        min-width: 120px;
+    }
+
+    .product-table.table thead th {
+        font-size: 12px;
     }
 }
 
+@media screen and (max-width: 992px) {
+
+    /* Product Details flex layout */
+    .single-product-variation-row>.d-flex {
+        gap: 15px !important;
+    }
+
+    /* Uniform width for responsive */
+    /* Uniform width for responsive - Base Columns */
+    .single-product-variation-row>.d-flex>.form-group {
+        min-width: 120px;
+        width: 120px;
+    }
+
+    /* Wider width for Tax and Discount on Tablet/Mobile */
+    .single-product-variation-row>.d-flex>.form-group:has(.d-flex.gap-1),
+    .single-product-variation-row>.d-flex>.form-group:has(.input-group) {
+        min-width: 160px;
+        width: 160px;
+    }
+
+    .single-product-variation-row .form-control {
+        min-width: 70px;
+    }
+
+    .single-product-variation-row .form-label {
+        font-size: 10px;
+    }
+
+    /* Selected Product table */
+    .product-table.table th,
+    .product-table.table td {
+        min-width: 90px;
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+
+    .product-table.table thead th {
+        font-size: 11px;
+    }
+
+    .product-table.table td .input-group .input-group-text {
+        max-width: 70px;
+        font-size: 10px;
+    }
+}
+
+/* =============================================
+   SECTION 4: Utility Classes for Column Widths
+   ============================================= */
+
+/* Utility classes for specific column widths */
+.mw-70 {
+    min-width: 70px !important;
+    max-width: 90px !important;
+}
+
+.mw-90 {
+    min-width: 90px !important;
+    max-width: 110px !important;
+}
+
+.mw-110 {
+    min-width: 110px !important;
+    max-width: 140px !important;
+}
+
+.mw-120 {
+    min-width: 120px !important;
+    max-width: 150px !important;
+}
+
+.mw-150 {
+    min-width: 150px !important;
+    max-width: 180px !important;
+}
+
+
+
 @media print {
+
     .pos-invoice p,
     .pos-invoice th,
-    .pos-invoice td{
-        color:#43404f !important;
+    .pos-invoice td {
+        color: #43404f !important;
     }
+
     .pos-invoice h1,
     .pos-invoice h2,
     .pos-invoice h3,
     .pos-invoice h4,
     .pos-invoice h5,
-    .pos-invoice h6{
-        color:#323234 !important;
+    .pos-invoice h6 {
+        color: #323234 !important;
     }
 }
-
