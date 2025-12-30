@@ -11,6 +11,7 @@
                                     <th>@lang('Supplier')</th>
                                     <th>@lang('Email')</th>
                                     <th>@lang('Mobile')</th>
+                                    <th>@lang('Balance')</th>
                                     <th>@lang('Status')</th>
                                     <th>@lang('Joined At')</th>
                                     <th>@lang('Action')</th>
@@ -27,6 +28,11 @@
                                         </td>
                                         <td>{{ __($supplier->email ?? 'N/A') }}</td>
                                         <td>{{ $supplier->mobile }}</td>
+                                        <td>
+                                            <span class="badge badge--{{ $supplier->balance > 0 ? 'danger' : 'success' }}">
+                                                {{ showAmount($supplier->balance) }}
+                                            </span>
+                                        </td>
                                         <td>
                                             <x-panel.other.status_switch :status="$supplier->status" :action="route('user.supplier.status.change', $supplier->id)"
                                                 title="supplier" />
