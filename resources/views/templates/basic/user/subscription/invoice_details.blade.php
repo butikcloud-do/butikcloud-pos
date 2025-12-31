@@ -84,7 +84,7 @@
                                     {{ __(@$subscription?->subscriptionPlan?->name) }}
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    {{ gs('cur_sym') }}{{ showAmount(@$subscription->amount, currencyFormat: false) }}
+                                    {{ gs('cur_sym', getParentUser()->id) }}{{ showAmount(@$subscription->amount, currencyFormat: false) }}
                                 </td>
 
                                 <td class="text-end text-nowrap">

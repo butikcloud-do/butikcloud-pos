@@ -12,8 +12,8 @@
         </div>
         <h6 class="widget-amount">
             @if ($currency)
-                {{ gs('cur_sym') }}{{ showAmount($value, currencyFormat: false) }}
-                <span class="currency">{{ __(gs('cur_text')) }}</span>
+                {{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($value, currencyFormat: false) }}
+                <span class="currency">{{ __(gs('cur_text', getParentUser()->id)) }}</span>
             @else
                 <span>{{ $value }}</span>
             @endif

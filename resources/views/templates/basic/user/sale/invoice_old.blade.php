@@ -124,29 +124,29 @@
                                 @endif
                             </td>
                             <td class="border-b py--3">
-                                {{ gs('cur_sym') }}{{ showAmount($saleDetail->unit_price, currencyFormat: false) }}
+                                {{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($saleDetail->unit_price, currencyFormat: false) }}
                             </td>
                             <td class="border-b py--3">
-                                {{ gs('cur_sym') }}{{ showAmount($saleDetail->tax_amount, currencyFormat: false) }}
+                                {{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($saleDetail->tax_amount, currencyFormat: false) }}
                                 @if ($saleDetail->tax_amount > 0)
                                     - {{ getAmount($saleDetail->tax_percentage) }}%
                                 @endif
                             </td>
                             <td class="border-b py--3">
-                                {{ gs('cur_sym') }}{{ showAmount($saleDetail->discount_amount, currencyFormat: false) }}
+                                {{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($saleDetail->discount_amount, currencyFormat: false) }}
                                 @if ($saleDetail->discount_amount > 0 && $saleDetail->discount_type == Status::DISCOUNT_PERCENT)
                                     - {{ getAmount($saleDetail->discount_value) }}%
                                 @endif
                             </td>
                             <td class="border-b py--3">
-                                {{ gs('cur_sym') }}{{ showAmount($saleDetail->sale_price, currencyFormat: false) }}
+                                {{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($saleDetail->sale_price, currencyFormat: false) }}
                             </td>
                             <td class="border-b py--3">
                                 {{ $saleDetail->quantity }}
                                 {{ __(@$saleDetail->product->unit->short_name) }}
                             </td>
                             <td class="border-b py--3 text-end">
-                                {{ gs('cur_sym') }}{{ showAmount($saleDetail->subtotal, currencyFormat: false) }}
+                                {{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($saleDetail->subtotal, currencyFormat: false) }}
                             </td>
                         </tr>
                     @endforeach
@@ -249,12 +249,12 @@
                 <li class="list-group-item d-flex justify-content-between gap-2 flex-wrap ps-0">
                     <span>@lang('Total Payable')</span>
                     <span
-                        class="fw-bold">{{ gs('cur_sym') }}{{ showAmount($sale->total, currencyFormat: false) }}</span>
+                        class="fw-bold">{{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($sale->total, currencyFormat: false) }}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between gap-2 flex-wrap ps-0">
                     <span>@lang('Total Paid')</span>
                     <span
-                        class="fw-bold">{{ gs('cur_sym') }}{{ showAmount($sale->payments->sum('amount'), currencyFormat: false) }}</span>
+                        class="fw-bold">{{ gs('cur_sym', getParentUser()->id) }}{{ showAmount($sale->payments->sum('amount'), currencyFormat: false) }}</span>
                 </li>
             </ul>
         </div>
