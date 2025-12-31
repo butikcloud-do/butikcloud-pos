@@ -35,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
         using: function () {
             Route::namespace('App\Http\Controllers')->group(function () {
                 Route::prefix('api')
-                    ->middleware(['api', 'maintenance'])
+                    ->middleware(['api', 'maintenance', ActiveTemplateMiddleware::class])
                     ->group(base_path('routes/api.php'));
                 Route::middleware(['web'])
                     ->namespace('Admin')

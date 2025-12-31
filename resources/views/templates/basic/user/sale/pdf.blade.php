@@ -702,8 +702,14 @@
                 <tbody>
                     <tr>
                         <td class="w-50 align-middle">
-                            <img class="invoice-logo mt-4"
-                                src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(siteLogo())) }}" />
+                            @if(siteLogoPath())
+                                <img class="invoice-logo mt-4"
+                                    src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(siteLogoPath())) }}" />
+                            @else
+                                <div class="invoice-logo mt-4" style="font-size: 24px; font-weight: bold; color: #000;">
+                                    {{ gs('site_name') }}
+                                </div>
+                            @endif
                         </td>
                         <td class="w-50 align-middle">
                             <ul class="invoice-company-info float-end">

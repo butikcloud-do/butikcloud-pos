@@ -93,6 +93,20 @@ function siteFavicon()
     return getImage(getFilePath('logoIcon') . '/favicon.png');
 }
 
+function siteLogoPath($type = null)
+{
+    $name = $type ? "/logo_$type.png" : '/logo.png';
+    $path = getFilePath('logoIcon') . $name;
+
+    // Return full file path if file exists
+    if (file_exists(public_path($path))) {
+        return public_path($path);
+    }
+
+    // Return null if file doesn't exist
+    return null;
+}
+
 function loadReCaptcha()
 {
     return Captcha::reCaptcha();
