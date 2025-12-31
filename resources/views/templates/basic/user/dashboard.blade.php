@@ -61,6 +61,32 @@
                             title="All Purchase" :value="$widget['all_purchase']" icon="las la-calendar" />
                     </div>
                 </x-staff_permission_check>
+
+                <x-staff_permission_check permission="view purchase">
+                    <div class="col-xxl-3 col-sm-6">
+                        <x-panel.ui.widget.four url="{{ route('user.supplier.list') }}?balance=today"
+                            variant="info" title="Today Balance" :value="$widget['today_balance']" icon="las la-wallet" />
+                    </div>
+                </x-staff_permission_check>
+                <x-staff_permission_check permission="view purchase">
+                    <div class="col-xxl-3 col-sm-6">
+                        <x-panel.ui.widget.four url="{{ route('user.supplier.list') }}?balance=week"
+                            variant="info" title="This Week Balance" :value="$widget['this_week_balance']" icon="las la-wallet" />
+                    </div>
+                </x-staff_permission_check>
+                <x-staff_permission_check permission="view purchase">
+                    <div class="col-xxl-3 col-sm-6">
+                        <x-panel.ui.widget.four url="{{ route('user.supplier.list') }}?balance=month"
+                            variant="info" title="This Month Balance" :value="$widget['this_month_balance']" icon="las la-wallet" />
+                    </div>
+                </x-staff_permission_check>
+                <x-staff_permission_check permission="view purchase">
+                    <div class="col-xxl-3 col-sm-6">
+                        <x-panel.ui.widget.four url="{{ route('user.supplier.list') }}" variant="info"
+                            title="All Balance" :value="$widget['all_balance']" icon="las la-wallet" />
+                    </div>
+                </x-staff_permission_check>
+
                 <x-staff_permission_check permission="view expense">
                     <div class="col-xxl-3 col-sm-6">
                         <x-panel.ui.widget.four url="{{ route('user.expense.list') }}?date={{ $today }}"

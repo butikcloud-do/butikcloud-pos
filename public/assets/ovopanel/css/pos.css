@@ -131,6 +131,7 @@ body {
     align-items: center;
     gap: 16px;
     padding: 8px 0px 8px 8px;
+    min-width: 215px;
 }
 
 @media screen and (max-width: 991px) {
@@ -189,6 +190,7 @@ body {
 .pos-location-field .select2-container--default .select2-selection--single {
     padding-right: 32px;
     background-color: transparent;
+    max-width: 93px;
 }
 
 
@@ -225,6 +227,7 @@ body {
     display: -webkit-box;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 114px;
 }
 
 [data-theme=dark] .pos-location-field .select2-container .select2-selection--single .select2-selection__rendered {

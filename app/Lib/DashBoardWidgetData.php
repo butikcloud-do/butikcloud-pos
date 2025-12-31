@@ -99,6 +99,28 @@ class DashBoardWidgetData
     }
 
     /**
+     * Fetches balance data for various periods such as today, this week, this month, and all-time balance.
+     * Balance is calculated as the sum of due_amount from purchases.
+     *
+     * @return array Balance data, including total balance for each period.
+     */
+    public static function balanceWidgetData(): array
+    {
+        $user = getParentUser();
+
+        return Purchase::where('user_id', $user->id)->selectRaw("
+            COALESCE(SUM(CASE WHEN purchase_date = ? THEN due_amount END), 0) as today_balance,
+            COALESCE(SUM(CASE WHEN purchase_date >= ? THEN due_amount END), 0) as this_week_balance,
+            COALESCE(SUM(CASE WHEN purchase_date >= ? THEN due_amount END), 0) as this_month_balance,
+            COALESCE(SUM(due_amount), 0) as all_balance
+        ", [
+            now()->format("Y-m-d"),
+            now()->startOfWeek()->format("Y-m-d"),
+            now()->startOfMonth()->format("Y-m-d"),
+        ])->first()->toArray();
+    }
+
+    /**
      * Fetches user data, including the total number of users, active users, email unverified users,
      * and mobile unverified users.
      *
