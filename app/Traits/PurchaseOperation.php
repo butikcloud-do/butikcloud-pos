@@ -134,7 +134,11 @@ trait PurchaseOperation
 
         $total = $subtotal - $discountAmount + $shippingAmount;
 
-        if ($request->paid_amount && $request->paid_amount > $total) {
+        // Round both values to 2 decimal places to prevent floating-point precision issues
+        $roundedTotal = round($total, 2);
+        $roundedPaidAmount = round($request->paid_amount ?? 0, 2);
+
+        if ($request->paid_amount && $roundedPaidAmount > $roundedTotal) {
             $notify[] = "The paid amount cannot be greater than the total amount";
             return jsonResponse('limit', 'error', $notify);
         }
