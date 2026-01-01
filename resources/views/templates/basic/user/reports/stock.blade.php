@@ -62,8 +62,12 @@
                                         </td>
                                         <td>
                                             <div>
-                                                <span> {{ __(@$selectWarehouse->name) }} </span> <br>
-                                                <span> {{ __(@$selectWarehouse->contact_number) }} </span>
+                                                @if($selectWarehouse)
+                                                    <span> {{ __(@$selectWarehouse->name) }} </span> <br>
+                                                    <span> {{ __(@$selectWarehouse->contact_number) }} </span>
+                                                @else
+                                                    <span> @lang('All Warehouses') </span>
+                                                @endif
                                             </div>
                                         </td>
                                         <td>

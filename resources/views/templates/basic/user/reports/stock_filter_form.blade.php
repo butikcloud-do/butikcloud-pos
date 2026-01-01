@@ -8,6 +8,7 @@
     <div class="form-group">
         <label class="form-label">@lang('Warehouse')</label>
         <select class="form-select select2" name="warehouse_id">
+            <option value="all" @selected(request()->warehouse_id === 'all' || !request()->warehouse_id)>@lang('All')</option>
             @foreach ($warehouses as $warehouse)
                 <option value="{{ $warehouse->id }}" @selected(request()->warehouse_id == $warehouse->id)>
                     {{ __(@$warehouse->name) }}

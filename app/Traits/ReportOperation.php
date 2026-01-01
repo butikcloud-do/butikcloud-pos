@@ -113,20 +113,40 @@ trait ReportOperation
         $warehouses      = Warehouse::where('user_id', $user->id)->orderBy('name')->get();
         $brands          = Brand::where('user_id', $user->id)->orderBy('name')->get();
         $categories      = Category::where('user_id', $user->id)->orderBy('name')->get();
-        $selectWarehouse = request()->warehouse_id ? Warehouse::where('user_id', $user->id)->orderBy('name')->where('id', request()->warehouse_id)->firstOrFailWithApi('Warehouse') : $warehouses->first();
+
+        $warehouseId = request()->warehouse_id;
+        $isAllWarehouses = $warehouseId === 'all' || !$warehouseId;
+
+        if ($isAllWarehouses) {
+            $selectWarehouse = null; // For "All" warehouses
+        } else {
+            $selectWarehouse = Warehouse::where('user_id', $user->id)->orderBy('name')->where('id', $warehouseId)->firstOrFailWithApi('Warehouse');
+        }
 
         $baseQuery = ProductDetail::with('product', "product.unit", 'productStock.warehouse')->whereHas('product', function ($q) use ($user) {
             $q->where('user_id', $user->id);
-        })
-            ->withSum([
+        });
+
+        if ($isAllWarehouses) {
+            // For "All" warehouses, aggregate stock across all warehouses
+            $baseQuery->withSum([
+                'productStock' => function ($q) {
+                    // No warehouse filter - sum all stock for each product
+                },
+            ], 'stock');
+        } else {
+            // For specific warehouse, filter by warehouse_id
+            $baseQuery->withSum([
                 'productStock' => function ($q) use ($selectWarehouse) {
                     $q->where('warehouse_id', $selectWarehouse->id ?? 0);
                 },
-            ], 'stock')
-            ->orderBy('product_stock_sum_stock', 'desc');
+            ], 'stock');
+        }
 
-        if (!$selectWarehouse) {
-            $baseQuery->whereRaw("1=0"); // for empty result
+        $baseQuery->orderBy('product_stock_sum_stock', 'desc');
+
+        if (!$isAllWarehouses && !$selectWarehouse) {
+            $baseQuery->whereRaw("1=0"); // for empty result when no warehouse selected and not "all"
         }
 
         $products = $baseQuery->searchable(['product:name', 'sku'])->filter(['product:brand_id', 'product:category_id'])->paginate(getPaginate());
