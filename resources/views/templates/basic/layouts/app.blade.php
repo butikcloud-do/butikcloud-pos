@@ -2,6 +2,7 @@
 <html lang="{{ config('app.locale') }}" itemscope itemtype="http://schema.org/WebPage">
 
 <head>
+    @php echo loadExtension('google-analytics') @endphp
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -25,7 +26,7 @@
 
     <link rel="stylesheet"
         href="{{ asset($activeTemplateTrue . 'css/color.php') }}?color={{ gs('base_color') }}&secondColor={{ gs('secondary_color') }}">
-    @php echo loadExtension('google-analytics') @endphp
+    
 </head>
 
 <body>
