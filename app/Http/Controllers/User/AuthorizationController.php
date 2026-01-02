@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 use App\Constants\Status;
 use App\Lib\Intended;
+use App\Events\UserVerified;
 
 class AuthorizationController extends Controller
 {
@@ -99,6 +100,9 @@ class AuthorizationController extends Controller
             $user->ver_code_send_at = null;
             $user->save();
 
+            // Fire event after successful email verification
+            event(new UserVerified($user, 'email'));
+
             $redirection = Intended::getRedirection();
             return $redirection ? $redirection : to_route('user.home');
         }
@@ -118,6 +122,10 @@ class AuthorizationController extends Controller
             $user->ver_code = null;
             $user->ver_code_send_at = null;
             $user->save();
+
+            // Fire event after successful mobile verification
+            event(new UserVerified($user, 'mobile'));
+
             $redirection = Intended::getRedirection();
             return $redirection ? $redirection : to_route('user.home');
         }

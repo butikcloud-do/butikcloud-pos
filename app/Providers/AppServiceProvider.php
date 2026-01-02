@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Lib\Searchable;
+use App\Listeners\UserVerifiedListener;
+use App\Events\UserVerified;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -38,5 +41,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+
+        // Register event listeners
+        Event::listen(
+            UserVerified::class,
+            UserVerifiedListener::class
+        );
     }
 }
