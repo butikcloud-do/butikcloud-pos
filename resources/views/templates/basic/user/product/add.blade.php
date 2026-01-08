@@ -101,7 +101,7 @@
                                         <div class="my-4 variant-divider skelton-here">
                                             <h5 class="divider-title">@lang('Product Details')</h5>
                                         </div>
-                                        <div class="d-flex gap-3 flex-wrap skelton-here">
+                                        <div class="d-flex gap-3 skelton-here overflow-auto">
                                             <div class="form-group">
                                                 <label class="form-label">
                                                     @lang('SKU')
@@ -449,7 +449,7 @@
                                     ${attribute.name} -  ${variant.name}
                                 </h5>
                             </div>
-                            <div class="d-flex gap-3 flex-wrap skeleton">
+                            <div class="d-flex gap-3 overflow-auto skeleton">
                                 <div class="form-group">
                                     <label class="form-label">
                                         @lang('SKU')
@@ -1043,86 +1043,45 @@
             width: 80px;
         }
 
+        /* Product Details section - keep original behavior */
         .product-variation-row .form-label {
             white-space: nowrap !important;
         }
         
         .product-variation-row .form-group {
             min-width: 150px;
-            max-width: 250px;
-            flex: 1 1 auto;
         }
         
-        /* Ensure input groups don't overflow */
-        .product-variation-row .input-group {
+        /* FIX: Prevent top form fields from overflowing */
+        .product-create-form > .row {
+            overflow: hidden;
+        }
+        
+        /* Ensure form controls don't exceed container width */
+        .product-create-form > .row > .form-group .form-control,
+        .product-create-form > .row > .form-group .select2-container {
             max-width: 100%;
         }
         
-        /* Ensure form controls maintain reasonable widths */
-        .product-variation-row .form-control,
-        .product-variation-row .form-select {
-            min-width: 120px;
+        /* Ensure select2 dropdowns don't cause overflow */
+        .product-create-form > .row > .form-group .select2-container .select2-selection {
+            max-width: 100%;
         }
         
-        /* Tax field special handling - smaller width */
-        .product-variation-row .form-group:has(.d-flex.gap-1) {
-            min-width: 200px;
-            max-width: 280px;
-        }
-        
-        /* Prevent horizontal overflow */
-        .product-variation-row {
-            overflow-x: hidden;
-        }
-        
-        /* Media queries for better responsiveness */
-        @media (max-width: 1400px) {
-            .product-variation-row .form-group {
-                min-width: 140px;
-                max-width: 220px;
-            }
-        }
-        
+        /* Better width management for form groups in top section */
         @media (max-width: 1200px) {
-            .product-variation-row .form-group {
-                min-width: 130px;
-                max-width: 200px;
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .product-variation-row .form-group {
-                min-width: 45%;
-                max-width: 48%;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .product-variation-row .form-group {
-                min-width: 100%;
+            .product-create-form > .row > .col-12.col-md-6 {
+                flex: 0 0 100%;
                 max-width: 100%;
             }
-            
-            .divider-title::before,
-            .divider-title::after {
-                width: 50px;
-                left: -60px;
-            }
-            
-            .divider-title::after {
-                right: -60px;
-            }
         }
         
-        @media (max-width: 576px) {
-            .divider-title::before,
-            .divider-title::after {
-                width: 30px;
-                left: -40px;
-            }
-            
-            .divider-title::after {
-                right: -40px;
+        @media (min-width: 768px) and (max-width: 991px) {
+            .product-create-form > .row > .col-12.col-md-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+                padding-right: 0.75rem;
+                padding-left: 0.75rem;
             }
         }
 
