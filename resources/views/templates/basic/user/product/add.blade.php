@@ -67,7 +67,7 @@
                                 <label>@lang('Description')</label>
                                 <textarea name="description" class="form-control" cols="5" rows="5"></textarea>
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-sm-6 align-self-start">
                                 <label>@lang('Image')</label>
                                 <input type="file" class="form-control" name="image">
                             </div>
