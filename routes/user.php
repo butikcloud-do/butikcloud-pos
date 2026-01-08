@@ -175,6 +175,12 @@ Route::middleware('auth')->name('user.')->group(function () {
                 });
             });
 
+            //staff import
+            Route::controller('StaffImportController')->name('staff.import.')->prefix('staff/import')->group(function () {
+                Route::get('sample', 'downloadSample')->name('sample')->middleware('staff.permission:view staff');
+                Route::post('/', 'import')->name('store')->middleware('staff.permission:update staff', 'has.subscription');
+            });
+
             //product
             Route::controller('ProductController')->name('product.')->prefix('product')->group(function () {
                 Route::get('list', 'list')->name('list')->middleware('staff.permission:view product');
@@ -194,6 +200,12 @@ Route::middleware('auth')->name('user.')->group(function () {
                     Route::post('restore/{id}', 'restoreTrash')->name('restore');
                     Route::get('list', 'listTrash')->name('list');
                 });
+            });
+
+            //product import
+            Route::controller('ProductImportController')->name('product.import.')->prefix('product/import')->group(function () {
+                Route::get('sample', 'downloadSample')->name('sample')->middleware('staff.permission:add product');
+                Route::post('/', 'import')->name('store')->middleware('staff.permission:add product', 'has.subscription');
             });
 
             // Stock Transfer
@@ -323,6 +335,12 @@ Route::middleware('auth')->name('user.')->group(function () {
                 });
             });
 
+            //category import
+            Route::controller('CategoryImportController')->name('category.import.')->prefix('category/import')->group(function () {
+                Route::get('sample', 'downloadSample')->name('sample')->middleware('staff.permission:add category');
+                Route::post('/', 'import')->name('store')->middleware('staff.permission:add category', 'has.subscription');
+            });
+
             //brand
             Route::controller('BrandController')->name('brand.')->prefix('brand')->group(function () {
                 Route::get('list', 'list')->name('list')->middleware('staff.permission:view brand');
@@ -336,6 +354,12 @@ Route::middleware('auth')->name('user.')->group(function () {
                     Route::post('restore/{id}', 'restoreTrash')->name('restore');
                     Route::get('list', 'listTrash')->name('list');
                 });
+            });
+
+            //brand import
+            Route::controller('BrandImportController')->name('brand.import.')->prefix('brand/import')->group(function () {
+                Route::get('sample', 'downloadSample')->name('sample')->middleware('staff.permission:add brand');
+                Route::post('/', 'import')->name('store')->middleware('staff.permission:add brand', 'has.subscription');
             });
 
             //unit
@@ -428,6 +452,12 @@ Route::middleware('auth')->name('user.')->group(function () {
                 });
             });
 
+            //customer import
+            Route::controller('CustomerImportController')->name('customer.import.')->prefix('customer/import')->group(function () {
+                Route::get('sample', 'downloadSample')->name('sample')->middleware('staff.permission:add customer');
+                Route::post('/', 'import')->name('store')->middleware('staff.permission:add customer', 'has.subscription');
+            });
+
             //supplier
             Route::controller('SupplierController')->name('supplier.')->prefix('supplier')->group(function () {
                 Route::get('list', 'list')->name('list')->middleware('staff.permission:view supplier');
@@ -446,6 +476,11 @@ Route::middleware('auth')->name('user.')->group(function () {
                 });
             });
 
+            //supplier import
+            Route::controller('SupplierImportController')->name('supplier.import.')->prefix('supplier/import')->group(function () {
+                Route::get('sample', 'downloadSample')->name('sample')->middleware('staff.permission:add supplier');
+                Route::post('/', 'import')->name('store')->middleware('staff.permission:add supplier', 'has.subscription');
+            });
 
             // Company
             Route::middleware('has.hrm')->group(function () {

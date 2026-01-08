@@ -112,11 +112,18 @@ class Push extends NotifyProcess implements Notifiable{
 
 
     /**
-    * Configure some properties
-    *
-    * @return void
-    */
+     * Configure some properties
+     *
+     * @return void
+     */
 	public function prevConfiguration(){
+        // Check if push notifications are enabled before accessing database
+        if (!gs('pn')) {
+            $this->deviceId = [];
+            $this->toAddress = [];
+            return;
+        }
+
 		if ($this->user) {
             $this->deviceId = $this->user->deviceTokens()->pluck('token')->toArray();
 			$this->receiverName = $this->user->fullname;

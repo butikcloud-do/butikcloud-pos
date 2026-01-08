@@ -58,7 +58,7 @@
 
     <x-panel.ui.modal id="modal">
         <x-panel.ui.modal.header>
-            <h4 class="modal-title">@lang('Add Admin')</h4>
+            <h4 class="modal-title">@lang('Add Customer')</h4>
             <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close">
                 <i class="las la-times"></i>
             </button>
@@ -113,6 +113,7 @@
         </x-panel.ui.modal.body>
     </x-panel.ui.modal>
 
+    @include('Template::user.customer.import_modal')
     <x-confirmation-modal />
 @endsection
 
@@ -153,5 +154,9 @@
 @push('breadcrumb-plugins')
     <x-staff_permission_check permission="add customer">
         <x-panel.ui.btn.add tag="btn" />
+        <button type="button" class="btn btn-outline--primary me-2" data-bs-toggle="modal" data-bs-target="#importCustomerModal">
+            <i class="las la-file-import me-1"></i>@lang('Import Customers')
+        </button>
+        
     </x-staff_permission_check>
 @endpush

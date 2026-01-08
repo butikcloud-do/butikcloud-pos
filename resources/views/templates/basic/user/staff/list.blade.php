@@ -47,11 +47,16 @@
         </div>
     </div>
 
+    @include('Template::user.staff.import_modal')
     <x-confirmation-modal />
 @endsection
 
 @push('breadcrumb-plugins')
     <x-staff_permission_check permission="add sale">
         <x-panel.ui.btn.add href="{{ route('user.staff.create') }}" text="New Staff" />
+        <button type="button" class="btn btn-outline--primary me-2" data-bs-toggle="modal" data-bs-target="#importStaffModal">
+            <i class="las la-file-import me-1"></i>@lang('Import Staff')
+        </button>
+        
     </x-staff_permission_check>
 @endpush

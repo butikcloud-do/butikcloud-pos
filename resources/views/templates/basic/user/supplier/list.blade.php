@@ -176,6 +176,7 @@
         </x-panel.ui.modal.body>
     </x-panel.ui.modal>
 
+    @include('Template::user.supplier.import_modal')
     <x-confirmation-modal />
 @endsection
 
@@ -217,5 +218,8 @@
 @push('breadcrumb-plugins')
     <x-staff_permission_check permission="add supplier">
         <x-panel.ui.btn.add tag="btn" />
+        <button type="button" class="btn btn-outline--primary me-2" data-bs-toggle="modal" data-bs-target="#importSupplierModal">
+            <i class="las la-file-import me-1"></i>@lang('Import Suppliers')
+        </button>
     </x-staff_permission_check>
 @endpush

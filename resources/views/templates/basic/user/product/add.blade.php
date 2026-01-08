@@ -1060,4 +1060,13 @@
         <i class="las la-list me-1"></i>@lang('Product List')
     </a>
  </x-staff_permission_check>
+ {{-- Import Products Button --}}
+ <x-staff_permission_check permission="add product">
+    <button type="button" class="btn btn-outline--primary" data-bs-toggle="modal" data-bs-target="#importProductModal">
+        <i class="las la-file-import me-1"></i>@lang('Import Products')
+    </button>
+ </x-staff_permission_check>
 @endpush
+
+{{-- Include Import Modal Component --}}
+@include('Template::user.product.import_modal')
