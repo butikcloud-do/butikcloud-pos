@@ -8,11 +8,11 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-12 col-md-6">
                                 <label>@lang('Product Name')</label>
                                 <input type="text" class="form-control" name="name" required>
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-12 col-md-6">
                                 <label>
                                     @lang('Product Code')
                                     <span data-bs-toggle="tooltip" data-bs-placement="top" title="@lang('Leave this field blank to automatically generate the content')">
@@ -26,7 +26,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-12 col-md-6">
                                 <label>@lang('Category')</label>
                                 <select name="category_id" class="form-control select2" required>
                                     <option value="">@lang('Select Category')</option>
@@ -35,7 +35,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-12 col-md-6">
                                 <label>@lang('Brand')</label>
                                 <select name="brand_id" class="form-control select2" required>
                                     <option value="">@lang('Select Brand')</option>
@@ -44,7 +44,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-12 col-md-6">
                                 <label>@lang('Unit')</label>
                                 <select name="unit_id" class="form-control select2" required>
                                     <option value="">@lang('Select Unit')</option>
@@ -55,7 +55,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-12 col-md-6">
                                 <label>@lang('Product Type')</label>
                                 <select name="product_type" class="form-control select2 product-type" required
                                     data-minimum-results-for-search="-1">
@@ -63,11 +63,11 @@
                                     <option value="{{ Status::PRODUCT_TYPE_VARIABLE }}">@lang('Variable')</option>
                                 </select>
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-12 col-md-6">
                                 <label>@lang('Description')</label>
                                 <textarea name="description" class="form-control" cols="5" rows="5"></textarea>
                             </div>
-                            <div class="form-group col-sm-6 align-self-start">
+                            <div class="form-group col-12 col-md-6 align-self-start">
                                 <label>@lang('Image')</label>
                                 <input type="file" class="form-control" name="image">
                             </div>
@@ -101,7 +101,7 @@
                                         <div class="my-4 variant-divider skelton-here">
                                             <h5 class="divider-title">@lang('Product Details')</h5>
                                         </div>
-                                        <div class="d-flex gap-3  skelton-here overflow-auto">
+                                        <div class="d-flex gap-3 flex-wrap skelton-here">
                                             <div class="form-group">
                                                 <label class="form-label">
                                                     @lang('SKU')
@@ -449,7 +449,7 @@
                                     ${attribute.name} -  ${variant.name}
                                 </h5>
                             </div>
-                            <div class="d-flex gap-3 overflow-auto skeleton">
+                            <div class="d-flex gap-3 flex-wrap skeleton">
                                 <div class="form-group">
                                     <label class="form-label">
                                         @lang('SKU')
@@ -1046,8 +1046,84 @@
         .product-variation-row .form-label {
             white-space: nowrap !important;
         }
-        .product-variation-row .form-group{
+        
+        .product-variation-row .form-group {
             min-width: 150px;
+            max-width: 250px;
+            flex: 1 1 auto;
+        }
+        
+        /* Ensure input groups don't overflow */
+        .product-variation-row .input-group {
+            max-width: 100%;
+        }
+        
+        /* Ensure form controls maintain reasonable widths */
+        .product-variation-row .form-control,
+        .product-variation-row .form-select {
+            min-width: 120px;
+        }
+        
+        /* Tax field special handling - smaller width */
+        .product-variation-row .form-group:has(.d-flex.gap-1) {
+            min-width: 200px;
+            max-width: 280px;
+        }
+        
+        /* Prevent horizontal overflow */
+        .product-variation-row {
+            overflow-x: hidden;
+        }
+        
+        /* Media queries for better responsiveness */
+        @media (max-width: 1400px) {
+            .product-variation-row .form-group {
+                min-width: 140px;
+                max-width: 220px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .product-variation-row .form-group {
+                min-width: 130px;
+                max-width: 200px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .product-variation-row .form-group {
+                min-width: 45%;
+                max-width: 48%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .product-variation-row .form-group {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            
+            .divider-title::before,
+            .divider-title::after {
+                width: 50px;
+                left: -60px;
+            }
+            
+            .divider-title::after {
+                right: -60px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .divider-title::before,
+            .divider-title::after {
+                width: 30px;
+                left: -40px;
+            }
+            
+            .divider-title::after {
+                right: -40px;
+            }
         }
 
     </style>
