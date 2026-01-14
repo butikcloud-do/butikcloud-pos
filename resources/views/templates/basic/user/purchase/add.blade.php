@@ -836,6 +836,12 @@
             <i class="las la-list me-1"></i>@lang('Purchase List')
         </a>
     </x-staff_permission_check>
+    {{-- Import Stock Button --}}
+    <x-staff_permission_check permission="add purchase">
+        <button type="button" class="btn btn-outline--primary" data-bs-toggle="modal" data-bs-target="#importPurchaseModal">
+            <i class="las la-file-import me-1"></i>@lang('Import Stock')
+        </button>
+    </x-staff_permission_check>
 @endpush
 
 @push('style')
@@ -866,3 +872,6 @@
         }
     </style>
 @endpush
+
+{{-- Include Import Modal Component --}}
+@include('Template::user.purchase.import_modal')

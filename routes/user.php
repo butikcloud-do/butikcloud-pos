@@ -157,6 +157,12 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::post('remove/single/item/{id}', 'removeSingleItem')->name('remove.single.item');
             });
 
+            //purchase import
+            Route::controller('PurchaseImportController')->name('purchase.import.')->prefix('purchase/import')->group(function () {
+                Route::get('sample', 'downloadSample')->name('sample')->middleware('staff.permission:view purchase');
+                Route::post('/', 'import')->name('store')->middleware('staff.permission:add purchase', 'has.subscription', 'active.cash.register');
+            });
+
             // Manage agent
             Route::controller('ManageStaffController')->prefix('staff')->name('staff.')->group(function () {
                 Route::get('list', 'list')->name('list')->middleware('staff.permission:view staff');
