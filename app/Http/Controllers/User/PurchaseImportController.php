@@ -82,13 +82,13 @@ class PurchaseImportController extends Controller
         $sampleData = [
             [
                 date('Y-m-d'), 'Sample Supplier', 'Main Warehouse', 'Received', 'REF001',
-                'SKU001', '10', '50.00', 'Exclusive', 'GST', '59.00', '20', '70.80', 'Percent', '5',
+                'SKU001', '10', '50.00', 'Exclusive', 'Property', '59.00', '20', '70.80', 'Percent', '5',
                 'Fixed', '100', '50',
                 '500', date('Y-m-d'), date('Y-m-d', strtotime('+7 days')), 'Cash', 'Initial payment'
             ],
             [
                 date('Y-m-d'), 'Sample Supplier', 'Main Warehouse', 'Received', 'REF001',
-                'SKU002', '5', '100.00', 'Inclusive', 'VAT', '100.00', '15', '115.00', 'Fixed', '10',
+                'SKU002', '5', '100.00', 'Inclusive', 'Property', '100.00', '15', '115.00', 'Fixed', '10',
                 'Fixed', '100', '50',
                 '500', date('Y-m-d'), date('Y-m-d', strtotime('+7 days')), 'Cash', 'Initial payment'
             ]
