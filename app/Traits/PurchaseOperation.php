@@ -86,7 +86,14 @@ trait PurchaseOperation
         $purchase  = Purchase::withSum('supplierPayments', 'amount')
             ->where("user_id", $user->id)
             ->where("id", $id)
-            ->with("warehouse", "supplier", 'supplierPayments.paymentType')
+            ->with([
+                "warehouse",
+                "supplier",
+                'supplierPayments.paymentType',
+                'purchaseDetails.product',
+                'purchaseDetails.productDetail.attribute',
+                'purchaseDetails.productDetail.variant'
+            ])
             ->firstOrFailWithApi("purchase");
 
         return responseManager("view_purchase", $pageTitle, 'success', compact('pageTitle', 'purchase', 'view'));
@@ -456,7 +463,14 @@ trait PurchaseOperation
     public function pdf($id)
     {
         $pageTitle = "Purchase Invoice";
-        $purchase  = Purchase::with("warehouse", "supplier")
+        $purchase  = Purchase::with([
+                "warehouse",
+                "supplier",
+                'supplierPayments.paymentType',
+                'purchaseDetails.product',
+                'purchaseDetails.productDetail.attribute',
+                'purchaseDetails.productDetail.variant'
+            ])
             ->withSum('supplierPayments', 'amount')
             ->where("id", $id)
             ->where("user_id", getParentUser()->id)

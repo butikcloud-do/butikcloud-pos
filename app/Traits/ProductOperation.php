@@ -117,7 +117,7 @@ trait ProductOperation
     private function getProductCode()
     {
         $user            = getParentUser();
-        $maxId           = Product::where('user_id', $user->id)->count() + 1;
+        $maxId           = Product::withTrashed()->where('user_id', $user->id)->count() + 1;
         $prefix          = gs('prefix_setting',  $user->id, true);
         $summationNumber = 1000;
 
