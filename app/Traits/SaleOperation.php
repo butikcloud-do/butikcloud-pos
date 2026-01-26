@@ -31,6 +31,11 @@ trait SaleOperation
         $user      = getParentUser();
         $baseQuery = Sale::where('user_id', $user->id)->latest('id');
 
+        \Log::info('SaleOperation:list - Base query created', [
+            'user_id' => $user->id,
+            'total_sales_in_db' => Sale::where('user_id', $user->id)->count()
+        ]);
+
         if (request()->export) {
             return exportData($baseQuery, request()->export, "Sale");
         }
@@ -44,6 +49,18 @@ trait SaleOperation
             ->withSum('payments', 'amount')
             ->searchable(['customer:name,email,mobile', 'invoice_number', 'warehouse:name'])
             ->paginate(getPaginate());
+
+        \Log::info('SaleOperation:list - Query executed', [
+            'total_sales_returned' => $sales->count(),
+            'sales_data' => $sales->map(function($sale) {
+                return [
+                    'id' => $sale->id,
+                    'invoice_number' => $sale->invoice_number,
+                    'sale_details_count' => $sale->sale_details_count,
+                    'actual_sale_details_count' => $sale->saleDetails()->count()
+                ];
+            })->toArray()
+        ]);
 
         $widget                           = [];
         $widget['today_sale']             = (clone $baseQuery)->where('sale_date', now()->format("Y-m-d"))->sum('total');
