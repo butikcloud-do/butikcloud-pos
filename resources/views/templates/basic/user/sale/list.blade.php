@@ -19,12 +19,35 @@
                                 </tr>
                             </x-panel.ui.table.header>
                             <x-panel.ui.table.body>
+                                @php
+                                    \Log::info('Sale list view - Processing sales', [
+                                        'total_sales' => $sales->count(),
+                                        'sales_data' => $sales->map(function($sale) {
+                                            return [
+                                                'id' => $sale->id,
+                                                'invoice_number' => $sale->invoice_number,
+                                                'sale_details_count' => $sale->sale_details_count ?? 'NOT_SET',
+                                                'has_sale_details_relation' => method_exists($sale, 'saleDetails'),
+                                                'actual_count_via_relation' => method_exists($sale, 'saleDetails') ? $sale->saleDetails()->count() : 'N/A'
+                                            ];
+                                        })->toArray()
+                                    ]);
+                                @endphp
                                 @forelse($sales as $sale)
                                     <tr>
                                         <td>
                                             <div>
                                                 <span class="d-block">{{ __($sale->invoice_number) }}</span>
-                                                <span>{{ __($sale->sale_details_count) }} @lang('Items') </span>
+                                                @php
+                                                    $count = $sale->sale_details_count ?? 0;
+                                                    \Log::info('Sale list view - Rendering count', [
+                                                        'sale_id' => $sale->id,
+                                                        'invoice_number' => $sale->invoice_number,
+                                                        'sale_details_count' => $count,
+                                                        'display_value' => $count . ' Items'
+                                                    ]);
+                                                @endphp
+                                                <span>{{ $count }} @lang('Items') </span>
                                             </div>
                                         </td>
                                         <td>
@@ -170,6 +193,14 @@
     <script>
         "use strict";
         (function($) {
+            // Debug logging for sale details count
+            console.log('Sale list page loaded');
+            $('.table tbody tr').each(function(index) {
+                var $row = $(this);
+                var invoiceNumber = $row.find('td:first .d-block').text();
+                var itemsText = $row.find('td:first span:last').text();
+                console.log('Row ' + index + ': Invoice ' + invoiceNumber + ' - ' + itemsText);
+            });
             const $paymentModal = $('#payment-modal');
             const $paymentHistoryModal = $('#payment-history-modal');
 
