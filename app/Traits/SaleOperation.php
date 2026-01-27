@@ -40,15 +40,20 @@ trait SaleOperation
             return exportData($baseQuery, request()->export, "Sale");
         }
 
-        $sales = (clone $baseQuery)
+        $query = (clone $baseQuery)
             ->with("warehouse", "customer", 'payments.paymentType')
             ->withCount('saleDetails')
             ->dateFilter('sale_date')
             ->trashFilter()
             ->filter(['customer_id'])
             ->withSum('payments', 'amount')
-            ->searchable(['customer:name,email,mobile', 'invoice_number', 'warehouse:name'])
-            ->paginate(getPaginate());
+            ->searchable(['customer:name,email,mobile', 'invoice_number', 'warehouse:name']);
+
+        \Log::info('--- SALE LIST QUERY DEBUG START ---');
+        \Log::info('Raw SQL (interpolated):', ['fullSql' => $query->toRawSql()]);
+        \Log::info('--- SALE LIST QUERY DEBUG END ---');
+
+        $sales = $query->paginate(getPaginate());
 
         \Log::info('SaleOperation:list - Query executed', [
             'total_sales_returned' => $sales->count(),

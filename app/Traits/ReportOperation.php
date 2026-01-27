@@ -72,7 +72,7 @@ trait ReportOperation
         $view      = "Template::user.reports.sale";
         $user      = getParentUser();
 
-        $baseQuery = Sale::with("warehouse", "customer")
+        $query = Sale::with("warehouse", "customer")
             ->where('user_id', $user->id)
             ->withSum('payments', 'amount')
             ->withSum('saleDetails as total_purchase_value', 'purchase_price')
@@ -81,7 +81,11 @@ trait ReportOperation
             ->dateFilter('sale_date')
             ->filter(['customer_id']);
 
-        $sales = $baseQuery->paginate(getPaginate());
+        \Log::info('--- SALE REPORT QUERY DEBUG START ---');
+        \Log::info('Raw SQL (interpolated):', ['fullSql' => $query->toRawSql()]);
+        \Log::info('--- SALE REPORT QUERY DEBUG END ---');
+
+        $sales = $query->paginate(getPaginate());
 
         return responseManager("sale_report", $pageTitle, 'success', compact('pageTitle', 'view', 'sales'));
     }
