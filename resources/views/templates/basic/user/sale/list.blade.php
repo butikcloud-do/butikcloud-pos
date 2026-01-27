@@ -47,7 +47,7 @@
                                                         'display_value' => $count . ' Items'
                                                     ]);
                                                 @endphp
-                                                <span>{{ __($count) }} @lang('Items') </span>
+                                                <span>{{ $count }} @lang('Items') </span>
                                             </div>
                                         </td>
                                         <td>

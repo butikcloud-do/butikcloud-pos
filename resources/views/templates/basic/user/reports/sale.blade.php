@@ -29,7 +29,7 @@
                                                     <a
                                                         href="{{ route('user.sale.view', $sale->id) }}">{{ __($sale->invoice_number) }}</a>
                                                 </span>
-                                                <span>{{ __($sale->sale_details_count) }} @lang('Items') </span>
+                                                <span>{{ $sale->sale_details_count }} @lang('Items') </span>
                                             </div>
                                         </td>
                                         <td>
