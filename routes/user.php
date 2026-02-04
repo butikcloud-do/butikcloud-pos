@@ -138,6 +138,8 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::post('remove/single/item/{id}', 'removeSingleItem')->name('remove.single.item');
                 Route::post('apply/coupon', 'applyCoupon')->name('apply.coupon');
                 Route::get('top-selling-product', 'topSellingProduct')->name('top.selling.product');
+                Route::get('product-search-enhanced', 'searchProductsEnhanced')->name('product.search.enhanced');
+                Route::get('product/{id}/quick-view', 'quickView')->name('product.quick.view');
             });
 
             //purchase

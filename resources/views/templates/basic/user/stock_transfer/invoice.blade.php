@@ -36,7 +36,7 @@
                 <li class="invoice-info__item">
                     <span class="label">@lang('Invoice Number')</span>
                     <p class="value">
-                        {{ __($transfer->invoice_number) }}
+                        {{ $transfer->invoice_number }}
                     </p>
                 </li>
             </ul>
@@ -64,7 +64,7 @@
                                 @endif
                             </td>
                             <td class="text-center text-nowrap">
-                                {{ __($transferDetail->quantity) }} {{ __(@$transferDetail->productDetail->product->unit->short_name) }}
+                                {{ $transferDetail->quantity }} {{ __(@$transferDetail->productDetail->product->unit->short_name) }}
                             </td>
                         </tr>
                     @endforeach

@@ -742,7 +742,7 @@
                                 <li class="invoice-info__item float-end">
                                     <span class="label">@lang('Invoice Number')</span>
                                     <p class="value me-4">
-                                        {{ __($transfer->invoice_number) }}
+                                        {{ $transfer->invoice_number }}
                                     </p>
                                 </li>
                             </ul>
@@ -775,7 +775,7 @@
                                             @endif
                                         </td>
                                         <td class="text-end">
-                                            {{ __($transferDetail->quantity) }}
+                                            {{ $transferDetail->quantity }}
                                         </td>
                                     </tr>
                             @endforeach

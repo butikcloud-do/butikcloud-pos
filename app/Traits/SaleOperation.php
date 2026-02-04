@@ -459,6 +459,12 @@ trait SaleOperation
             "sale_details.*.discount_type"     => ["nullable", Rule::in(Status::DISCOUNT_PERCENT, Status::DISCOUNT_FIXED)],
             "sale_details.*.discount_value"    => "nullable|numeric|gte:0",
 
+            'sale_details.*.tax_id'            => "nullable|integer",
+            'sale_details.*.tax_type'          => ["nullable", Rule::in(Status::TAX_TYPE_EXCLUSIVE, Status::TAX_TYPE_INCLUSIVE)],
+            'sale_details.*.tax_amount'        => "nullable|numeric|gte:0",
+            'sale_details.*.tax_percentage'    => "nullable|numeric|gte:0",
+            'sale_details.*.unit_price'        => "nullable|numeric|gte:0",
+
             'payment'                          => "required|array|min:1",
             'payment.*.amount'                 => "required|numeric|gt:0",
             'payment.*.id'                     => "$isRequiredOnUpdate|numeric|gt:0",
@@ -492,27 +498,33 @@ trait SaleOperation
         $discountType   = @$requestSaleDetails['discount_type'] ?? @$productDetails->discount_type;
         $discountValue  = @$requestSaleDetails['discount_value'] ?? @$productDetails->discount_value;
 
+        $taxId         = @$requestSaleDetails['tax_id'] ?? $productDetails->tax_id;
+        $taxType       = @$requestSaleDetails['tax_type'] ?? $productDetails->tax_type;
+        $taxAmount     = @$requestSaleDetails['tax_amount'] ?? $productDetails->tax_amount;
+        $taxPercentage = @$requestSaleDetails['tax_percentage'] ?? $productDetails->tax_percentage;
+        $salePrice     = @$requestSaleDetails['unit_price'] ?? $productDetails->sale_price;
+
         if ($discountType == $discountTypePercent && $discountValue > 0) {
             if ($discountValue > 100) {
                 $message[] = "Maximum discount is 100%";
                 return jsonResponse('limit', 'error', $message);
             }
-            $discountAmount = $productDetails->sale_price / 100 * $discountValue;
+            $discountAmount = $salePrice / 100 * $discountValue;
         } else {
             $discountAmount = $discountValue;
         }
 
-        $unitPrice = $productDetails->sale_price - $productDetails->tax_amount;
-        $price     = $productDetails->sale_price - $discountAmount;
+        $unitPrice = $salePrice - $taxAmount;
+        $price     = $salePrice - $discountAmount;
         $subtotal  = getAmount($price) * $requestSaleDetails['quantity'];
 
         return [
             'product_id'         => $product->id,
             'product_details_id' => $productDetails->id,
-            'tax_id'             => $productDetails->tax_id,
-            'tax_type'           => $productDetails->tax_type,
-            'tax_amount'         => $productDetails->tax_amount,
-            'tax_percentage'     => $productDetails->tax_percentage,
+            'tax_id'             => $taxId,
+            'tax_type'           => $taxType,
+            'tax_amount'         => $taxAmount,
+            'tax_percentage'     => $taxPercentage,
             'purchase_price'     => $productDetails->purchase_price,
             'discount_type'      => $discountType,
             'discount_value'     => $discountValue,
