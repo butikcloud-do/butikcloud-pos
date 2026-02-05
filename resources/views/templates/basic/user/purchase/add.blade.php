@@ -15,7 +15,7 @@
                                         value="{{ date('Y-m-d') }}">
                                 </div>
                                 <div class="col-lg-4 form-group">
-                                    <label class="form-label">@lang('Supplier')</label>
+                                    <label class="form-label required">@lang('Supplier')</label>
                                     <x-panel.other.lazy_loading_select name="supplier_id" :route="route('user.supplier.lazy.loading')" />
                                 </div>
                                 <div class="col-lg-4 form-group">

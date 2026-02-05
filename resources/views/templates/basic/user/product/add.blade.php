@@ -171,7 +171,7 @@
                                                     readonly>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">@lang('Profit Margin') (%)</label>
+                                                <label class="form-label required">@lang('Profit Margin') (%)</label>
                                                 <input type="number" step="any"
                                                     class="form-control  profit-margin"
                                                     name="product_detail[0][profit_margin]">
@@ -219,7 +219,7 @@
                                                     name="product_detail[0][final_sale_price]" readonly>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">@lang('Alert Qty')</label>
+                                                <label class="form-label required">@lang('Alert Qty')</label>
                                                 <input type="number" step="any" class="form-control "
                                                     name="product_detail[0][alert_quantity]">
                                             </div>
@@ -515,7 +515,7 @@
                                         step="any" class="form-control  purchase-price" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Profit Margin') (%)</label>
+                                    <label class="form-label required">@lang('Profit Margin') (%)</label>
                                     <input type="number" step="any" class="form-control  profit-margin"
                                         name="product_detail[${productVariationsLength}][profit_margin]">
                                 </div>
@@ -558,7 +558,7 @@
                                         name="product_detail[${productVariationsLength}][final_sale_price]" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Alert Qty')</label>
+                                    <label class="form-label required">@lang('Alert Qty')</label>
                                     <input type="number" step="any" class="form-control "
                                         name="product_detail[${productVariationsLength}][alert_quantity]">
                                 </div>
@@ -648,7 +648,7 @@
                                         step="any" class="form-control  purchase-price" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Profit Margin') (%)</label>
+                                    <label class="form-label required">@lang('Profit Margin') (%)</label>
                                     <input type="number" step="any" class="form-control  profit-margin"
                                         name="product_detail[0][profit_margin]">
                                 </div>
@@ -690,7 +690,7 @@
                                         name="product_detail[0][final_sale_price]" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">@lang('Alert Qty')</label>
+                                    <label class="form-label required">@lang('Alert Qty')</label>
                                     <input type="number" step="any" class="form-control "
                                         name="product_detail[0][alert_quantity]">
                                 </div>
