@@ -981,7 +981,7 @@
                                         <th style="width: 12%;" class="text-end">Cost</th>
                                         <th style="width: 12%;" class="text-end">Quantity</th>
                                         <th style="width: 17%;" class="text-end d-none d-md-table-cell">Last Purchase</th>
-                                        <th style="width: 17%;" class="text-end d-none d-lg-table-cell">Last Order</th>
+                                        <th style="width: 17%;" class="text-end d-none d-lg-table-cell">Last Sale</th>
                                     </tr>
                                 </thead>
                                 <tbody class="virtual-scroll-body">
