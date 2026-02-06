@@ -4,7 +4,7 @@
 <div class="col-12">
     <x-panel.ui.card class="table-has-filter" >
         <x-panel.ui.card.body :paddingZero="true" >
-          <x-panel.ui.table.layout filterBoxLocation="reports.filter_form" :hasRecycleBin="false" :renderExportButton="false">
+          <x-panel.ui.table.layout filterBoxLocation="Template::user.reports.filter_form" :hasRecycleBin="false" :renderExportButton="false">
                 <x-panel.ui.table>
                     <x-panel.ui.table.header>
                         <tr>
@@ -21,7 +21,7 @@
                             <td>
                                 <div>
                                     <strong>
-                                       {{ __(@$productWise->product->name), }}
+                                       {{ __(@$productWise->product->name) }}
                                     </strong><br>
                                     <span>
                                     @lang('SKU:') {{ __($productWise->sku) }}

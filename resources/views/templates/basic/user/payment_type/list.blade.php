@@ -128,6 +128,15 @@
 
                 $modal.find('.modal-title').text("@lang('Add Payment Type')");
                 $form.trigger('reset');
+                $modal.find('select[name=variant]').val('primary').trigger('change');
+                $modal.find('input, select').attr('disabled', false);
+                $modal.find('.submit-btn').removeClass('d-none');
+                
+                // Reset IconPicker UI
+                const $iconSpan = $modal.find('.input-group-addon');
+                $iconSpan.find('i').attr('class', 'las la-home');
+                $iconSpan.attr('data-icon', 'las la-home');
+
                 $form.attr('action', action);
                 $modal.modal('show');
             });
@@ -138,8 +147,24 @@
 
                 $modal.find('.modal-title').text("@lang('Edit Payment Type')");
                 $modal.find('input[name=name]').val(paymentType.name);
-                $modal.find('select[name=variant]').val(paymentType.variant);
+                $modal.find('select[name=variant]').val(paymentType.variant).trigger('change');
                 $modal.find('input[name=icon]').val(paymentType.icon);
+                
+                // Sync IconPicker UI
+                const $iconSpan = $modal.find('.input-group-addon');
+                const iconClass = $(paymentType.icon).attr('class') || 'las la-home';
+                $iconSpan.find('i').attr('class', iconClass);
+                $iconSpan.attr('data-icon', iconClass);
+
+                const isDefault = paymentType.is_default == "{{ Status::YES }}";
+                if (isDefault) {
+                    $modal.find('input, select').not('[name=_token]').attr('disabled', true);
+                    $modal.find('.submit-btn').addClass('d-none');
+                } else {
+                    $modal.find('input, select').attr('disabled', false);
+                    $modal.find('.submit-btn').removeClass('d-none');
+                }
+
                 $form.attr('action', action.replace(':id', paymentType.id));
                 $modal.modal('show');
             });

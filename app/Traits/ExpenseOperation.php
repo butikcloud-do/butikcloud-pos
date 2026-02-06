@@ -56,15 +56,21 @@ trait ExpenseOperation
             'attachment'      => ['nullable', new FileTypeValidate(['jpg', 'jpeg', 'png', 'pdf', 'docx'])],
         ]);
 
-        $parentUser     = getParentUser();
-        $paymentType    = PaymentType::where('id', $request->payment_type)->where('user_id', $parentUser->id)->first();
+        $parentUser = getParentUser();
+
+        $expense = null;
+        if ($id) {
+            $expense = Expense::where('id', $id)->where('user_id', $parentUser->id)->firstOrFailWithApi('expense');
+        }
+
+        $paymentTypeId = $request->payment_type ?? @$expense->payment_type_id;
+        $paymentType   = PaymentType::where('id', $paymentTypeId)->where('user_id', $parentUser->id)->first();
 
         if (!$paymentType) {
             return responseManager("error", "The payment type is not found");
         }
 
         if ($id) {
-            $expense          = Expense::where('id', $id)->where('user_id', $parentUser->id)->firstOrFailWithApi('expense');
             $message          = "Expense updated successfully";
             $remark           = "expense-updated";
             $oldExpenseAmount = $expense->amount;
@@ -74,7 +80,7 @@ trait ExpenseOperation
             $message                     = "Expense added successfully";
             $remark                      = "expense-add";
             $expense->user_id            = $parentUser->id;
-            $expense->payment_type_id    = $request->payment_type;
+            $expense->payment_type_id    = $paymentTypeId;
             $oldExpenseAmount            = 0;
         }
 

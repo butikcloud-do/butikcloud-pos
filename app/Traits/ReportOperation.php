@@ -30,7 +30,14 @@ trait ReportOperation
             ->withSum('saleDetails as gross_profit', DB::raw('(sale_price - purchase_price) * quantity'))
             ->searchable(['invoice_number', 'customer:name'])
             ->dateFilter('sale_date')
-            ->paginate(getPaginate());
+            ->filter(['customer_id', 'saleDetails:product_id'])
+            ->orderBy('sale_date', getOrderBy());
+
+        if (request()->export) {
+            return exportData($invoicesWise, request()->export, "InvoiceWiseProfit");
+        }
+
+        $invoicesWise = $invoicesWise->paginate(getPaginate())->withQueryString();
 
         $widget['total_invoices'] = $invoicesWise->count();
         $widget['total_sale']     = $invoicesWise->sum('total_sales_price');
@@ -56,7 +63,13 @@ trait ReportOperation
             ->whereHas('salesDetails', function ($query) {
                 $query->dateFilter('created_at');
             })
-            ->paginate(getPaginate());
+            ->orderBy('id', getOrderBy());
+
+        if (request()->export) {
+            return exportData($productsWise, request()->export, "ProductWiseProfit");
+        }
+
+        $productsWise = $productsWise->paginate(getPaginate())->withQueryString();
 
         $widget['sales_quantity'] = $productsWise->sum('total_sales_quantity');
         $widget['total_sale']     = $productsWise->sum('total_sales_price');
@@ -79,9 +92,14 @@ trait ReportOperation
             ->withCount('saleDetails')
             ->searchable(["invoice_number"])
             ->dateFilter('sale_date')
-            ->filter(['customer_id']);
+            ->filter(['customer_id', 'saleDetails:product_id'])
+            ->orderBy('sale_date', getOrderBy());
 
-        $sales = $baseQuery->paginate(getPaginate());
+        if (request()->export) {
+            return exportData($baseQuery, request()->export, "Sale");
+        }
+
+        $sales = $baseQuery->paginate(getPaginate())->withQueryString();
 
         return responseManager("sale_report", $pageTitle, 'success', compact('pageTitle', 'view', 'sales'));
     }
@@ -97,9 +115,14 @@ trait ReportOperation
             ->withSum('supplierPayments', 'amount')
             ->searchable(["invoice_number"])
             ->dateFilter('purchase_date')
-            ->filter(['supplier_id']);
+            ->filter(['supplier_id'])
+            ->orderBy('purchase_date', getOrderBy());
 
-        $purchases = $baseQuery->paginate(getPaginate());
+        if (request()->export) {
+            return exportData($baseQuery, request()->export, "Purchase");
+        }
+
+        $purchases = $baseQuery->paginate(getPaginate())->withQueryString();
 
         return responseManager("purchase_report", $pageTitle, 'success', compact('pageTitle', 'view', 'purchases'));
     }
@@ -149,7 +172,7 @@ trait ReportOperation
             $baseQuery->whereRaw("1=0"); // for empty result when no warehouse selected and not "all"
         }
 
-        $products = $baseQuery->searchable(['product:name', 'sku'])->filter(['product:brand_id', 'product:category_id'])->paginate(getPaginate());
+        $products = $baseQuery->searchable(['product:name', 'sku'])->filter(['product:brand_id', 'product:category_id'])->paginate(getPaginate())->withQueryString();
 
         return responseManager("stock_report", $pageTitle, 'success', compact('pageTitle', 'view', 'products', 'warehouses', 'brands', 'categories', 'selectWarehouse'));
     }
@@ -164,9 +187,14 @@ trait ReportOperation
             ->where('user_id', $user->id)
             ->searchable(["category:name"])
             ->dateFilter('expense_date')
-            ->filter(['category_id']);
+            ->filter(['category_id'])
+            ->orderBy('expense_date', getOrderBy());
 
-        $expenses = $baseQuery->paginate(getPaginate());
+        if (request()->export) {
+            return exportData($baseQuery, request()->export, "Expense");
+        }
+
+        $expenses = $baseQuery->paginate(getPaginate())->withQueryString();
 
         return responseManager("expense_report", $pageTitle, 'success', compact('pageTitle', 'view', 'expenses'));
     }
