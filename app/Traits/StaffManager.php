@@ -7,7 +7,9 @@ use App\Models\StaffPermission;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Exception;
 
 trait StaffManager
 {
@@ -42,64 +44,87 @@ trait StaffManager
     public function save(Request $request)
     {
         $user = getParentUser();
-
-
-
-        $countryData  = (array) json_decode(file_get_contents(resource_path('views/partials/country.json')));
-        $countryCodes = implode(',', array_keys($countryData));
-        $mobileCodes  = implode(',', array_column($countryData, 'dial_code'));
-        $countries    = implode(',', array_column($countryData, 'country'));
-
-        $request->validate([
-            'firstname'    => 'required',
-            'lastname'     => 'required',
-            'email'        => 'required|string|email|unique:users',
-            'username'     => 'required|string|unique:users',
-            'country_code' => 'required|in:' . $countryCodes,
-            'country'      => 'required|in:' . $countries,
-            'mobile_code'  => 'required|in:' . $mobileCodes,
-            'username'     => 'required|unique:users|min:6',
-            'mobile'       => ['required', 'regex:/^([0-9]*)$/', Rule::unique('users')->where('dial_code', $request->mobile_code)],
+        Log::info('Staff Registration Started', [
+            'admin_id' => $user->id,
+            'input'    => $request->except(['password', 'password_confirmation'])
         ]);
+
+        try {
+            $countryData  = (array) json_decode(file_get_contents(resource_path('views/partials/country.json')));
+            $countryCodes = implode(',', array_keys($countryData));
+            $mobileCodes  = implode(',', array_column($countryData, 'dial_code'));
+            $countries    = implode(',', array_column($countryData, 'country'));
+
+            $request->validate([
+                'firstname'    => 'required',
+                'lastname'     => 'required',
+                'email'        => 'required|string|email|unique:users',
+                'username'     => 'required|string|unique:users',
+                'country_code' => 'required|in:' . $countryCodes,
+                'country'      => 'required|in:' . $countries,
+                'mobile_code'  => 'required|in:' . $mobileCodes,
+                'username'     => 'required|unique:users|min:6',
+                'mobile'       => ['required', 'regex:/^([0-9]*)$/', Rule::unique('users')->where('dial_code', $request->mobile_code)],
+            ]);
+            Log::info('Staff Validation Passed');
+        } catch (Exception $e) {
+            Log::error('Staff Validation Failed', ['error' => $e->getMessage()]);
+            throw $e;
+        }
 
         $oneTimePassword = getNumber(10);
 
         if (!featureAccessLimitCheck($user->user_limit)) {
+            Log::warning('Staff Limit Reached', ['admin_id' => $user->id, 'limit' => $user->user_limit]);
             $message = "You have reached the maximum limit of adding users. Please upgrade your plan.";
             return responseManager("subscription_reached", $message, "error");
         }
 
-        $staff                   = new User();
-        $staff->firstname        = $request->firstname;
-        $staff->lastname         = $request->lastname;
-        $staff->username         = $request->username;
-        $staff->email            = $request->email;
-        $staff->country_code     = $request->country_code;
-        $staff->country_name     = @$request->country;
-        $staff->dial_code        = $request->mobile_code;
-        $staff->mobile           = $request->mobile;
-        $staff->city             = $request->city;
-        $staff->state            = $request->state;
-        $staff->zip              = $request->zip;
-        $staff->address          = $request->address;
-        $staff->parent_id        = $user->id;
-        $staff->password         = Hash::make($oneTimePassword);
-        $staff->kv               = Status::KYC_VERIFIED;
-        $staff->ev               = Status::VERIFIED;
-        $staff->sv               = Status::VERIFIED;
-        $staff->tv               = Status::VERIFIED;
-        $staff->profile_complete = Status::YES;
-        $staff->is_staff         = Status::YES;
-        $staff->save();
+        try {
+            $staff                   = new User();
+            $staff->firstname        = $request->firstname;
+            $staff->lastname         = $request->lastname;
+            $staff->username         = $request->username;
+            $staff->email            = $request->email;
+            $staff->country_code     = $request->country_code;
+            $staff->country_name     = @$request->country;
+            $staff->dial_code        = $request->mobile_code;
+            $staff->mobile           = $request->mobile;
+            $staff->city             = $request->city;
+            $staff->state            = $request->state;
+            $staff->zip              = $request->zip;
+            $staff->address          = $request->address;
+            $staff->parent_id        = $user->id;
+            $staff->password         = Hash::make($oneTimePassword);
+            $staff->kv               = Status::KYC_VERIFIED;
+            $staff->ev               = Status::VERIFIED;
+            $staff->sv               = Status::VERIFIED;
+            $staff->tv               = Status::VERIFIED;
+            $staff->profile_complete = Status::YES;
+            $staff->is_staff         = Status::YES;
+            $staff->save();
+            Log::info('Staff Record Saved', ['staff_id' => $staff->id]);
+        } catch (Exception $e) {
+            Log::error('Staff Record Save Failed', ['error' => $e->getMessage()]);
+            return responseManager("error", "Database error: " . $e->getMessage(), "error");
+        }
 
-        notify($staff, 'STAFF_REGISTERED', [
-            'user'        => $staff->fullname,
-            'parent_user' => $user->username,
-            'username'    => $staff->username,
-            'email'       => $staff->email,
-            'password'    => $oneTimePassword,
-            'login_url'   => route('user.login'),
-        ]);
+        try {
+            Log::info('Attempting Staff Registration Notification', ['email' => $staff->email]);
+            notify($staff, 'STAFF_REGISTERED', [
+                'user'        => $staff->fullname,
+                'parent_user' => $user->username,
+                'username'    => $staff->username,
+                'email'       => $staff->email,
+                'password'    => $oneTimePassword,
+                'login_url'   => route('user.login'),
+            ]);
+            Log::info('Staff Registration Notification Sent');
+        } catch (Exception $e) {
+            Log::error('Staff Registration Notification Failed', ['error' => $e->getMessage()]);
+            // We don't necessarily want to fail the whole request if only the email fails, 
+            // but we should know about it.
+        }
 
         decrementFeature($user, 'user_limit');
 
@@ -132,23 +157,38 @@ trait StaffManager
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'firstname' => 'required',
-            'lastname'  => 'required',
-        ]);
-        $user  = getParentUser();
-        $staff = User::staff()
-            ->where('is_deleted', Status::NO)
-            ->where('parent_id', $user->id)
-            ->findOrFailWithApi("staff", $id);
+        $user = getParentUser();
+        Log::info('Staff Update Started', ['admin_id' => $user->id, 'staff_id' => $id, 'input' => $request->all()]);
 
-        $staff->firstname = $request->firstname;
-        $staff->lastname  = $request->lastname;
-        $staff->city      = $request->city;
-        $staff->state     = $request->state;
-        $staff->zip       = $request->zip;
-        $staff->address   = $request->address;
-        $staff->save();
+        try {
+            $request->validate([
+                'firstname' => 'required',
+                'lastname'  => 'required',
+            ]);
+            Log::info('Staff Update Validation Passed');
+        } catch (Exception $e) {
+            Log::error('Staff Update Validation Failed', ['error' => $e->getMessage()]);
+            throw $e;
+        }
+
+        try {
+            $staff = User::staff()
+                ->where('is_deleted', Status::NO)
+                ->where('parent_id', $user->id)
+                ->findOrFailWithApi("staff", $id);
+
+            $staff->firstname = $request->firstname;
+            $staff->lastname  = $request->lastname;
+            $staff->city      = $request->city;
+            $staff->state     = $request->state;
+            $staff->zip       = $request->zip;
+            $staff->address   = $request->address;
+            $staff->save();
+            Log::info('Staff Update Record Saved');
+        } catch (Exception $e) {
+            Log::error('Staff Update Failed', ['error' => $e->getMessage()]);
+            return responseManager("error", "Update failed: " . $e->getMessage(), "error");
+        }
 
         $message = "Staff updated successfully";
         return responseManager("staff", $message, "success");
