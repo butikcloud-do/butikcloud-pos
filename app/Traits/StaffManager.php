@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 trait StaffManager
 {
@@ -50,21 +51,30 @@ trait StaffManager
         $mobileCodes  = implode(',', array_column($countryData, 'dial_code'));
         $countries    = implode(',', array_column($countryData, 'country'));
 
-        $request->validate([
-            'firstname'    => 'required',
-            'lastname'     => 'required',
-            'email'        => 'required|string|email|unique:users',
-            'username'     => 'required|string|unique:users',
-            'country_code' => 'required|in:' . $countryCodes,
-            'country'      => 'required|in:' . $countries,
-            'mobile_code'  => 'required|in:' . $mobileCodes,
-            'username'     => 'required|unique:users|min:6',
-            'mobile'       => ['required', 'regex:/^([0-9]*)$/', Rule::unique('users')->where('dial_code', $request->mobile_code)],
-        ]);
+        Log::info('StaffManager:save starting...', ['request' => $request->all()]);
+
+        try {
+            $request->validate([
+                'firstname'    => 'required',
+                'lastname'     => 'required',
+                'email'        => 'required|string|email|unique:users',
+                'username'     => 'required|string|unique:users',
+                'country_code' => 'required|in:' . $countryCodes,
+                'country'      => 'required|in:' . $countries,
+                'mobile_code'  => 'required|in:' . $mobileCodes,
+                'username'     => 'required|unique:users|min:6',
+                'mobile'       => ['required', 'regex:/^([0-9]*)$/', Rule::unique('users')->where('dial_code', $request->mobile_code)],
+            ]);
+            Log::info('StaffManager:save validation passed');
+        } catch (\Exception $e) {
+            Log::error('StaffManager:save validation failed', ['error' => $e->getMessage()]);
+            throw $e;
+        }
 
         $oneTimePassword = getNumber(10);
 
         if (!featureAccessLimitCheck($user->user_limit)) {
+            Log::warning('StaffManager:save limit reached', ['user_id' => $user->id]);
             $message = "You have reached the maximum limit of adding users. Please upgrade your plan.";
             return responseManager("subscription_reached", $message, "error");
         }
@@ -90,18 +100,32 @@ trait StaffManager
         $staff->tv               = Status::VERIFIED;
         $staff->profile_complete = Status::YES;
         $staff->is_staff         = Status::YES;
-        $staff->save();
+        try {
+            $staff->save();
+            Log::info('StaffManager:save staff record saved', ['staff_id' => $staff->id]);
+        } catch (\Exception $e) {
+            Log::error('StaffManager:save record save failed', ['error' => $e->getMessage()]);
+            return responseManager("error", "Failed to save staff record");
+        }
 
-        notify($staff, 'STAFF_REGISTERED', [
-            'user'        => $staff->fullname,
-            'parent_user' => $user->username,
-            'username'    => $staff->username,
-            'email'       => $staff->email,
-            'password'    => $oneTimePassword,
-            'login_url'   => route('user.login'),
-        ]);
+        try {
+            Log::info('StaffManager:save sending notification...');
+            notify($staff, 'STAFF_REGISTERED', [
+                'user'        => $staff->fullname,
+                'parent_user' => $user->username,
+                'username'    => $staff->username,
+                'email'       => $staff->email,
+                'password'    => $oneTimePassword,
+                'login_url'   => route('user.login'),
+            ]);
+            Log::info('StaffManager:save notification sent');
+        } catch (\Exception $e) {
+            Log::error('StaffManager:save notification failed', ['error' => $e->getMessage()]);
+            // We don't return error here because the staff is already created
+        }
 
         decrementFeature($user, 'user_limit');
+        Log::info('StaffManager:save completed successfully');
 
         $message = "Staff created successfully";
         return responseManager("staff", $message, "success");
@@ -132,15 +156,29 @@ trait StaffManager
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'firstname' => 'required',
-            'lastname'  => 'required',
-        ]);
+        Log::info('StaffManager:update starting...', ['id' => $id, 'request' => $request->all()]);
+        try {
+            $request->validate([
+                'firstname' => 'required',
+                'lastname'  => 'required',
+            ]);
+            Log::info('StaffManager:update validation passed');
+        } catch (\Exception $e) {
+            Log::error('StaffManager:update validation failed', ['error' => $e->getMessage()]);
+            throw $e;
+        }
+
         $user  = getParentUser();
-        $staff = User::staff()
-            ->where('is_deleted', Status::NO)
-            ->where('parent_id', $user->id)
-            ->findOrFailWithApi("staff", $id);
+        try {
+            $staff = User::staff()
+                ->where('is_deleted', Status::NO)
+                ->where('parent_id', $user->id)
+                ->findOrFailWithApi("staff", $id);
+            Log::info('StaffManager:update staff record found', ['staff_id' => $staff->id]);
+        } catch (\Exception $e) {
+            Log::error('StaffManager:update staff record not found or access denied', ['id' => $id, 'error' => $e->getMessage()]);
+            throw $e;
+        }
 
         $staff->firstname = $request->firstname;
         $staff->lastname  = $request->lastname;
@@ -148,7 +186,13 @@ trait StaffManager
         $staff->state     = $request->state;
         $staff->zip       = $request->zip;
         $staff->address   = $request->address;
-        $staff->save();
+        try {
+            $staff->save();
+            Log::info('StaffManager:update record saved');
+        } catch (\Exception $e) {
+            Log::error('StaffManager:update save failed', ['error' => $e->getMessage()]);
+            return responseManager("error", "Failed to update staff");
+        }
 
         $message = "Staff updated successfully";
         return responseManager("staff", $message, "success");
@@ -174,39 +218,63 @@ trait StaffManager
             "existingPermissions" => $existingPermissions,
         ]);
     }
-
     public function updatePermissions(Request $request, $id)
     {
-        $request->validate([
-            'permissions'   => "nullable|array|min:1",
-            'permissions.*' => "nullable|integer",
-        ]);
+        Log::info('StaffManager:updatePermissions starting...', ['id' => $id, 'request' => $request->all()]);
+        try {
+            $request->validate([
+                'permissions'   => "nullable|array|min:1",
+                'permissions.*' => "nullable|integer",
+            ]);
+            Log::info('StaffManager:updatePermissions validation passed');
+        } catch (\Exception $e) {
+            Log::error('StaffManager:updatePermissions validation failed', ['error' => $e->getMessage()]);
+            throw $e;
+        }
 
         $user  = getParentUser();
-        $staff = User::staff()
-            ->where('is_deleted', Status::NO)
-            ->where('parent_id', $user->id)
-            ->findOrFailWithApi("staff", $id);
+        try {
+            $staff = User::staff()
+                ->where('is_deleted', Status::NO)
+                ->where('parent_id', $user->id)
+                ->findOrFailWithApi("staff", $id);
+            Log::info('StaffManager:updatePermissions staff record found', ['staff_id' => $staff->id]);
+        } catch (\Exception $e) {
+            Log::error('StaffManager:updatePermissions record not found or access denied', ['id' => $id, 'error' => $e->getMessage()]);
+            throw $e;
+        }
 
-        $permissions = StaffPermission::whereIn('id', $request->permissions ?? [])->pluck('id')->toArray();
-        $staff->staffPermissions()->sync($permissions);
-
-        $message = "Staff permissions updated successfully";
-        return responseManager("staff", $message, "success");
+        try {
+            $permissions = StaffPermission::whereIn('id', $request->permissions ?? [])->pluck('id')->toArray();
+            $staff->staffPermissions()->sync($permissions);
+            Log::info('StaffManager:updatePermissions completed successfully');
+        } catch (\Exception $e) {
+            Log::error('StaffManager:updatePermissions sync failed', ['error' => $e->getMessage()]);
+            return responseManager("error", "Failed to update permissions");
+        }
     }
 
     public function delete($id)
     {
+        Log::info('StaffManager:delete starting...', ['id' => $id]);
         $user  = getParentUser();
-        $staff = User::staff()
-            ->where('is_deleted', Status::NO)
-            ->where('parent_id', $user->id)
-            ->find($id);
+        try {
+            $staff = User::staff()
+                ->where('is_deleted', Status::NO)
+                ->where('parent_id', $user->id)
+                ->find($id);
 
-        $staff->is_deleted = Status::YES;
-        $staff->save();
+            if (!$staff) {
+                Log::warning('StaffManager:delete staff record not found or access denied', ['id' => $id]);
+                return responseManager("error", "Staff not found");
+            }
 
-        $message = "Staff deleted successfully";
-        return responseManager("staff", $message, "success");
+            $staff->is_deleted = Status::YES;
+            $staff->save();
+            Log::info('StaffManager:delete completed successfully');
+        } catch (\Exception $e) {
+            Log::error('StaffManager:delete failed', ['id' => $id, 'error' => $e->getMessage()]);
+            return responseManager("error", "Failed to delete staff");
+        }
     }
 }
