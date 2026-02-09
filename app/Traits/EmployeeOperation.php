@@ -34,7 +34,7 @@ trait EmployeeOperation
     {
         $request->validate(
             [
-                'name'           => 'required|string|max:40',
+                'name'           => ['required', 'string', 'max:40', Rule::unique('employees', 'name')->where('user_id', getParentUser()->id)->whereNull('deleted_at')->ignore($id)],
                 'gender'         => 'required|string|max:40',
                 'dob'            => 'nullable|max:40',
                 'email' => ['nullable', 'string', 'email', 'max:40', Rule::unique('employees', 'email')->where('user_id', getParentUser()->id)->ignore($id)],

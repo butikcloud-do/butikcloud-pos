@@ -95,10 +95,14 @@
         <x-panel.ui.modal.body>
             <form method="POST" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="id" value="{{ old('id') }}">
                 <div class="row">
                     <div class="form-group col-lg-6">
                         <label>@lang('Name')</label>
-                        <input type="text" class="form-control" name="name" required value="{{ old('name') }}">
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" required value="{{ old('name') }}">
+                        @error('name')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="form-group col-lg-6">
                         <label>@lang('Gender')</label>
@@ -197,6 +201,7 @@
                 const action = "{{ route('user.employee.create') }}"
                 $modal.find('.modal-title').text("@lang('Add Employee')");
                 $form.trigger('reset');
+                $form.find('input[name=id]').val(0);
                 $modal.find('select[name=gender]').trigger('change');
                 $modal.find('select[name=company_id]').trigger('change');
                 $form.attr('action', action);
@@ -208,6 +213,7 @@
                 const action = "{{ route('user.employee.update', ':id') }}";
                 const employee = $(this).data('employee');
                 $modal.find('.modal-title').text("@lang('Edit Employee')");
+                $form.find('input[name=id]').val(employee.id);
                 $modal.find('input[name=name]').val(employee.name);
                 $modal.find('select[name=gender]').val(employee.gender).trigger('change');
                 $modal.find('input[name=dob]').val(employee.dob);
@@ -261,6 +267,27 @@
 
                 $('.designation-select').html(html).trigger('change');
             });
+
+            @if ($errors->any())
+                $(window).on('load', function() {
+                    const oldId = "{{ old('id') }}";
+                    if (oldId && oldId != 0) {
+                        $modal.find('.modal-title').text("@lang('Edit Employee')");
+                        const action = "{{ route('user.employee.update', ':id') }}";
+                        $form.attr('action', action.replace(':id', oldId));
+                    } else {
+                        const action = "{{ route('user.employee.create') }}";
+                        $modal.find('.modal-title').text("@lang('Add Employee')");
+                        $form.attr('action', action);
+                    }
+
+                    $modal.find('select[name=company_id]').trigger('change');
+                    $modal.find('select[name=department_id]').val("{{ old('department_id') }}").trigger('change');
+                    $modal.find('select[name=designation_id]').val("{{ old('designation_id') }}").trigger('change');
+
+                    $modal.modal('show');
+                });
+            @endif
 
 
         })(jQuery);
