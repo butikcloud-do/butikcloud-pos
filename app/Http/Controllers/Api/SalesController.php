@@ -40,7 +40,7 @@ class SalesController extends Controller
     }
     public function paymentMethod()
     {
-        $paymentMethods = PaymentType::active()->get();
+        $paymentMethods = PaymentType::active()->where('user_id', getParentUser()->id)->get();
         $message[]      = "Payment Method";
 
         return jsonResponse('payment_method', 'success', $message, [
