@@ -157,6 +157,7 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::get('print/{id}', 'print')->name('print');
                 Route::post('update-status/{id}', 'updateStatus')->name('update.status')->middleware('staff.permission:update purchase status');
                 Route::post('remove/single/item/{id}', 'removeSingleItem')->name('remove.single.item');
+                Route::get('product-search-enhanced', 'searchProductsEnhanced')->name('product.search.enhanced');
             });
 
             //purchase import

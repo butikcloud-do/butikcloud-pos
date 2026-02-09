@@ -64,7 +64,8 @@
                                     <i class="las la-barcode"></i>
                                 </span>
                             </div>
-                            <x-panel.other.product_search />
+                            <ul class="product-search-list list-group list-group-flush d-none">
+                            </ul>
                         </div>
                     </x-panel.ui.card.body>
                 </x-panel.ui.card>
@@ -818,6 +819,175 @@
             @endif
 
 
+            // ========== ENHANCED PRODUCT SEARCH (PURCHASE) ==========
+            const $searchInput = $(".product-search-input");
+            const $searchResultElement = $(".product-search-list");
+            const productTypeVariable = parseInt("{{ Status::PRODUCT_TYPE_VARIABLE }}");
+            
+            let searchTimeout = null;
+            let currentSearchRequest = null;
+            let currentPage = 1;
+            let hasMoreResults = true;
+            let isLoadingMore = false;
+            let lastSearchQuery = "";
+
+            const emptyResult = `
+                <li class="empty-result">
+                    <div class="product-search-list-loader p-5 text-center">
+                        <div class="d-flex flex-column align-items-center gap-3">
+                            <div>
+                                <img src="{{ asset('assets/images/empty_box.png') }}" class="empty-message">
+                            </div>
+                            <div>
+                                <h6 class="mb-1">@lang('Empty Result')</h6>
+                                <p>@lang('No products were found matching your search criteria')</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>`;
+
+            $searchInput.on('input', function(e) {
+                if ($('select[name=warehouse_id]').length && !$('select[name=warehouse_id]').val()) {
+                    notify('error', "@lang('Please select warehouse first')");
+                    $('select[name=warehouse_id]').focus();
+                    this.value = "";
+                    return false;
+                }
+
+                clearTimeout(searchTimeout);
+                const query = $(this).val();
+
+                if (!query || query.length < 1) {
+                    $searchResultElement.addClass('d-none').empty();
+                    lastSearchQuery = "";
+                    return;
+                }
+
+                if (query === lastSearchQuery) return;
+
+                searchTimeout = setTimeout(() => {
+                    initiateNewSearch(query);
+                }, 300);
+            });
+
+            function initiateNewSearch(query) {
+                lastSearchQuery = query;
+                currentPage = 1;
+                hasMoreResults = true;
+                isLoadingMore = false;
+                
+                if (currentSearchRequest) {
+                    currentSearchRequest.abort();
+                }
+
+                performSearch(query, 1);
+            }
+
+            function performSearch(query, page) {
+                const action = "{{ route('user.purchase.product.search.enhanced') }}";
+                isLoadingMore = true;
+
+                currentSearchRequest = $.ajax({
+                    type: "GET",
+                    url: action,
+                    dataType: "json",
+                    data: {
+                        search: query,
+                        warehouse_id: $('select[name=warehouse_id]').val(),
+                        page: page
+                    },
+                    beforeSend: function() {
+                        if (page === 1) {
+                            $searchResultElement.removeClass('d-none').html(`
+                                <li class="text-center p-3">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                </li>
+                            `);
+                        } else {
+                            if (!$(".search-load-more").length) {
+                                $searchResultElement.append(`
+                                    <li class="search-load-more text-center p-2">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    </li>
+                                `);
+                            }
+                        }
+                    },
+                    success: function(response) {
+                        isLoadingMore = false;
+                        if (response.status == 'success') {
+                            const products = response.data.products || [];
+                            const pagination = response.data.pagination;
+                            hasMoreResults = pagination.has_more;
+
+                            if (page === 1) {
+                                if (products.length <= 0) {
+                                    $searchResultElement.html(emptyResult);
+                                    return;
+                                }
+                                let html = ``;
+                                products.forEach(product => {
+                                    html += productHtml(product);
+                                });
+                                $searchResultElement.html(html);
+
+                                // Automatically click when exact match
+                                if (response.data.exact_match) {
+                                    $searchResultElement.find('.product-search-list-item').first().trigger('click');
+                                }
+                            } else {
+                                $(".search-load-more").remove();
+                                let html = ``;
+                                products.forEach(product => {
+                                    html += productHtml(product);
+                                });
+                                $searchResultElement.append(html);
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        if (status === 'abort') return;
+                        isLoadingMore = false;
+                        console.error('Search error:', error);
+                    }
+                });
+            }
+
+            // Infinite scroll on the results list
+            $searchResultElement.on('scroll', function() {
+                const scrollTop = $(this).scrollTop();
+                const scrollHeight = $(this)[0].scrollHeight;
+                const height = $(this).height();
+
+                if (hasMoreResults && !isLoadingMore) {
+                    if (scrollTop + height > scrollHeight * 0.8) {
+                        currentPage++;
+                        performSearch(lastSearchQuery, currentPage);
+                    }
+                }
+            });
+
+            function productHtml(product) {
+                return `
+                    <li class="list-group-item product-search-list-item"
+                    data-product='${JSON.stringify(product)}'>
+                        <div class="d-flex gap-2">
+                            <div class="product-search-thumb">
+                                <img src="${product.image_src}">
+                            </div>
+                            <div class="product-search-content text-start">
+                                <p class="mb-0 fw-bold">
+                                    ${product.name} ${product.attribute_name ?  `<strong> - ${product.attribute_name} -  ${product.variant_name}</strong>` : '' }
+                                </p>
+                                <p class="mb-0 small text-muted">
+                                    <strong>${product.sku}</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                `;
+            }
+
         })(jQuery);
     </script>
 @endpush
@@ -846,6 +1016,47 @@
 
 @push('style')
     <style>
+        .product-search-list {
+            position: absolute;
+            background: #fff;
+            width: 100%;
+            box-shadow: var(--dashboard-boxshadow);
+            top: 90px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 999999;
+        }
+
+        [data-theme=dark] .product-search-list {
+            background-color: hsl(var(--light));
+        }
+
+        .product-search-list-item {
+            cursor: pointer;
+        }
+
+        .product-search-list .product-search-thumb {
+            max-width: 50px;
+            border-radius: 10px;
+        }
+
+        .product-search-list .product-search-thumb img {
+            border-radius: 5px;
+        }
+
+        .list-group-item.product-search-list-item {
+            transition: 0.3s;
+        }
+
+        .list-group-item.product-search-list-item:hover {
+            background: #eeeeee;
+        }
+
+        [data-theme=dark] .list-group-item.product-search-list-item:hover {
+            background: hsl(var(--bg-color));
+        }
+
         .product-image {
             max-width: 40px;
             border-radius: 5px;
