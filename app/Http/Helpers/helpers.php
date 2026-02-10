@@ -244,7 +244,9 @@ function getPageSections($arr = false)
 function getImage($image, $size = null, $isAvatar = false)
 {
     $clean = '';
-    if (file_exists($image) && is_file($image)) {
+    // Treat $image as a public-relative path (e.g. 'assets/...') and resolve against public_path
+    $fullPath = public_path($image);
+    if (file_exists($fullPath) && is_file($fullPath)) {
         return asset($image) . $clean;
     }
     if ($isAvatar) {
@@ -332,7 +334,9 @@ function menuActive($routeName, $param = null, $className = 'active')
 function fileUploader($file, $location, $size = null, $old = null, $thumb = null, $filename = null)
 {
     $fileManager           = new FileManager($file);
-    $fileManager->path     = $location;
+    // Treat $location as a path relative to the public directory
+    // e.g. 'assets/images/logo_icon' => /var/www/app/public/assets/images/logo_icon
+    $fileManager->path     = public_path($location);
     $fileManager->size     = $size;
     $fileManager->old      = $old;
     $fileManager->thumb    = $thumb;
