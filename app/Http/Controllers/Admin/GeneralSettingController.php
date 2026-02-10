@@ -10,6 +10,7 @@ use App\Rules\FileTypeValidate;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class GeneralSettingController extends Controller
 {
@@ -149,6 +150,14 @@ class GeneralSettingController extends Controller
 
     public function logoIconUpdate(Request $request)
     {
+        Log::info('Admin logoIconUpdate called', [
+            'admin_id'   => optional($request->user())->id,
+            'ip'         => $request->ip(),
+            'has_logo'   => $request->hasFile('logo'),
+            'has_dark'   => $request->hasFile('logo_dark'),
+            'has_favicon'=> $request->hasFile('favicon'),
+        ]);
+
         $request->validate([
             'logo'    => ['image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
             'favicon' => ['image', new FileTypeValidate(['png'])],
@@ -157,16 +166,54 @@ class GeneralSettingController extends Controller
 
         if ($request->hasFile('logo')) {
             try {
+                Log::info('Attempting to upload admin logo', [
+                    'original_name' => $request->file('logo')->getClientOriginalName(),
+                    'mime_type'     => $request->file('logo')->getMimeType(),
+                    'size'          => $request->file('logo')->getSize(),
+                    'target_path'   => $path,
+                    'target_file'   => 'logo.png',
+                ]);
+
                 fileUploader($request->logo, $path, filename: 'logo.png');
+
+                Log::info('Admin logo uploaded successfully', [
+                    'target_path' => $path,
+                    'file'        => 'logo.png',
+                ]);
             } catch (\Exception $exp) {
+                Log::error('Admin logo upload failed', [
+                    'message'   => $exp->getMessage(),
+                    'file'      => $exp->getFile(),
+                    'line'      => $exp->getLine(),
+                    'trace'     => $exp->getTraceAsString(),
+                ]);
                 $notify[] = ['error', 'Couldn\'t upload the logo'];
                 return back()->withNotify($notify);
             }
         }
         if ($request->hasFile('logo_dark')) {
             try {
+                Log::info('Attempting to upload admin dark logo', [
+                    'original_name' => $request->file('logo_dark')->getClientOriginalName(),
+                    'mime_type'     => $request->file('logo_dark')->getMimeType(),
+                    'size'          => $request->file('logo_dark')->getSize(),
+                    'target_path'   => $path,
+                    'target_file'   => 'logo_dark.png',
+                ]);
+
                 fileUploader($request->logo_dark, $path, filename: 'logo_dark.png');
+
+                Log::info('Admin dark logo uploaded successfully', [
+                    'target_path' => $path,
+                    'file'        => 'logo_dark.png',
+                ]);
             } catch (\Exception $exp) {
+                Log::error('Admin dark logo upload failed', [
+                    'message'   => $exp->getMessage(),
+                    'file'      => $exp->getFile(),
+                    'line'      => $exp->getLine(),
+                    'trace'     => $exp->getTraceAsString(),
+                ]);
                 $notify[] = ['error', 'Couldn\'t upload the logo'];
                 return back()->withNotify($notify);
             }
@@ -174,12 +221,35 @@ class GeneralSettingController extends Controller
 
         if ($request->hasFile('favicon')) {
             try {
+                Log::info('Attempting to upload admin favicon', [
+                    'original_name' => $request->file('favicon')->getClientOriginalName(),
+                    'mime_type'     => $request->file('favicon')->getMimeType(),
+                    'size'          => $request->file('favicon')->getSize(),
+                    'target_path'   => $path,
+                    'target_file'   => 'favicon.png',
+                ]);
+
                 fileUploader($request->favicon, $path, filename: 'favicon.png');
+
+                Log::info('Admin favicon uploaded successfully', [
+                    'target_path' => $path,
+                    'file'        => 'favicon.png',
+                ]);
             } catch (\Exception $exp) {
+                Log::error('Admin favicon upload failed', [
+                    'message'   => $exp->getMessage(),
+                    'file'      => $exp->getFile(),
+                    'line'      => $exp->getLine(),
+                    'trace'     => $exp->getTraceAsString(),
+                ]);
                 $notify[] = ['error', 'Couldn\'t upload the favicon'];
                 return back()->withNotify($notify);
             }
         }
+        Log::info('Admin logoIconUpdate completed successfully', [
+            'admin_id' => optional($request->user())->id,
+        ]);
+
         $notify[] = ['success', 'Brand setting updated successfully'];
         return back()->withNotify($notify);
     }
