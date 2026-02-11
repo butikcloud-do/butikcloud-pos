@@ -86,7 +86,14 @@ function activeTemplateName()
 function siteLogo($type = null)
 {
     $name = $type ? "/logo_$type.png" : '/logo.png';
-    return getImage(getFilePath('logoIcon') . $name);
+     $path = getFilePath('logoIcon') . $name;
+
+    // Use file modification time as a cache-busting version so CDN/browser
+    // will refetch the logo when it changes
+    $fullPath = public_path($path);
+    $version  = file_exists($fullPath) ? filemtime($fullPath) : time();
+
+    return getImage($path) . '?v=' . $version;
 }
 function siteFavicon()
 {
