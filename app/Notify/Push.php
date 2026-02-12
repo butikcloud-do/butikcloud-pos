@@ -4,6 +4,7 @@ namespace App\Notify;
 
 use App\Notify\NotifyProcess;
 use App\Notify\Notifiable;
+use Illuminate\Support\Facades\Log;
 
 class Push extends NotifyProcess implements Notifiable{
 
@@ -54,8 +55,9 @@ class Push extends NotifyProcess implements Notifiable{
     * @return void|bool
     */
 	public function send(){
-
+		Log::info('Push:send starting...');
         if (!gs('pn')) {
+        	Log::info('Push:send skipped (Push disabled)');
 			return false;
 		}
 
@@ -63,13 +65,18 @@ class Push extends NotifyProcess implements Notifiable{
         $message = $this->getMessage();
         if ($message) {
             try {
+                Log::info('Push:send initializing Firebase credentials...');
                 $credentialsFilePath = getFilePath('pushConfig').'/push_config.json';
                 $client = new \Google_Client();
                 $client->setAuthConfig($credentialsFilePath);
                 $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+                
+                Log::info('Push:send fetching access token...');
                 $client->fetchAccessTokenWithAssertion();
                 $token = $client->getAccessToken();
                 $access_token = $token['access_token'];
+                Log::info('Push:send access token retrieved');
+
                 $headers = [
                     "Authorization: Bearer $access_token",
                     'Content-Type: application/json'
@@ -86,10 +93,14 @@ class Push extends NotifyProcess implements Notifiable{
                     'click_action'=>$this->redirectUrl,
                     'app_click_action'=>$this->redirectForApp($this->templateName)
                 ];
+
+                Log::info('Push:send starting token iteration...', ['token_count' => count($this->toAddress)]);
                 foreach ($this->toAddress as $toAddress) {
                     $data['token'] = $toAddress;
                     $payloadData['message'] = $data;
                     $payload = json_encode($payloadData);
+                    
+                    Log::info('Push:send calling FCM API...', ['token' => $toAddress]);
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/v1/projects/'.gs('firebase_config')->projectId.'/messages:send');
                     curl_setopt($ch, CURLOPT_POST, true);
@@ -99,14 +110,18 @@ class Push extends NotifyProcess implements Notifiable{
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
                     curl_exec($ch);
                     curl_close($ch);
+                    Log::info('Push:send FCM API call returned');
                 }
                 $this->createLog('push');
             } catch(\Exception $e){
+            	Log::error('Push:send failed', ['error' => $e->getMessage()]);
                 $this->createErrorLog($e->getMessage());
                 session()->flash('firebase_error',$e->getMessage());
             }
+        } else {
+        	Log::warning('Push:send message could not be retrieved');
         }
-
+        Log::info('Push:send completed');
     }
 
 

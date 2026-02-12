@@ -5,6 +5,7 @@ namespace App\Notify;
 use App\Notify\NotifyProcess;
 use App\Notify\SmsGateway;
 use App\Notify\Notifiable;
+use Illuminate\Support\Facades\Log;
 
 
 class Sms extends NotifyProcess implements Notifiable{
@@ -36,8 +37,9 @@ class Sms extends NotifyProcess implements Notifiable{
     * @return void|bool
     */
 	public function send(){
-
+		Log::info('Sms:send starting...');
         if (!gs('sn')) {
+			Log::info('Sms:send skipped (Sms disabled)');
 			return false;
 		}
         //get message from parent
@@ -46,20 +48,30 @@ class Sms extends NotifyProcess implements Notifiable{
 			try {
 				$gateway = gs('sms_config')->name;
                 if($this->mobile){
+                    Log::info('Sms:send using gateway', ['gateway' => $gateway, 'to' => $this->mobile]);
                     $sendSms = new SmsGateway();
                     $sendSms->to = $this->mobile;
                     $sendSms->from = $this->getSmsFrom();
                     $sendSms->message = strip_tags($message);
                     $sendSms->config = gs('sms_config');
+                    
+                    Log::info('Sms:send calling gateway method...');
                     $sendSms->$gateway();
+                    Log::info('Sms:send gateway method returned');
+                    
                     $this->createLog('sms');
+                } else {
+                	Log::warning('Sms:send mobile number not available');
                 }
 			} catch (\Exception $e) {
+				Log::error('Sms:send failed', ['error' => $e->getMessage()]);
 				$this->createErrorLog('SMS Error: '.$e->getMessage());
 				session()->flash('sms_error','API Error: '.$e->getMessage());
 			}
+		} else {
+			Log::warning('Sms:send message could not be retrieved');
 		}
-
+		Log::info('Sms:send completed');
 	}
 
     /**

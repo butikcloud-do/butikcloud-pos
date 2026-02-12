@@ -42,18 +42,19 @@ trait StaffManager
 
     public function save(Request $request)
     {
+        Log::info('StaffManager:save starting...', ['request' => $request->all()]);
+        
+        Log::info('StaffManager:save getting parent user...');
         $user = getParentUser();
-
-
+        Log::info('StaffManager:save parent user retrieved', ['user_id' => $user->id]);
 
         $countryData  = (array) json_decode(file_get_contents(resource_path('views/partials/country.json')));
         $countryCodes = implode(',', array_keys($countryData));
         $mobileCodes  = implode(',', array_column($countryData, 'dial_code'));
         $countries    = implode(',', array_column($countryData, 'country'));
 
-        Log::info('StaffManager:save starting...', ['request' => $request->all()]);
-
         try {
+            Log::info('StaffManager:save starting validation...');
             $request->validate([
                 'firstname'    => 'required',
                 'lastname'     => 'required',
@@ -73,11 +74,13 @@ trait StaffManager
 
         $oneTimePassword = getNumber(10);
 
+        Log::info('StaffManager:save checking feature access limit...');
         if (!featureAccessLimitCheck($user->user_limit)) {
             Log::warning('StaffManager:save limit reached', ['user_id' => $user->id]);
             $message = "You have reached the maximum limit of adding users. Please upgrade your plan.";
             return responseManager("subscription_reached", $message, "error");
         }
+        Log::info('StaffManager:save feature access limit check passed');
 
         $staff                   = new User();
         $staff->firstname        = $request->firstname;
@@ -100,7 +103,9 @@ trait StaffManager
         $staff->tv               = Status::VERIFIED;
         $staff->profile_complete = Status::YES;
         $staff->is_staff         = Status::YES;
+        
         try {
+            Log::info('StaffManager:save saving staff record...');
             $staff->save();
             Log::info('StaffManager:save staff record saved', ['staff_id' => $staff->id]);
         } catch (\Exception $e) {
@@ -109,7 +114,7 @@ trait StaffManager
         }
 
         try {
-            Log::info('StaffManager:save sending notification...');
+            Log::info('StaffManager:save calling notify helper...');
             notify($staff, 'STAFF_REGISTERED', [
                 'user'        => $staff->fullname,
                 'parent_user' => $user->username,
@@ -118,13 +123,16 @@ trait StaffManager
                 'password'    => $oneTimePassword,
                 'login_url'   => route('user.login'),
             ]);
-            Log::info('StaffManager:save notification sent');
+            Log::info('StaffManager:save notification sent (notify helper returned)');
         } catch (\Exception $e) {
             Log::error('StaffManager:save notification failed', ['error' => $e->getMessage()]);
             // We don't return error here because the staff is already created
         }
 
+        Log::info('StaffManager:save decrementing feature...');
         decrementFeature($user, 'user_limit');
+        Log::info('StaffManager:save feature decremented');
+        
         Log::info('StaffManager:save completed successfully');
 
         $message = "Staff created successfully";
@@ -158,6 +166,7 @@ trait StaffManager
     {
         Log::info('StaffManager:update starting...', ['id' => $id, 'request' => $request->all()]);
         try {
+            Log::info('StaffManager:update starting validation...');
             $request->validate([
                 'firstname' => 'required',
                 'lastname'  => 'required',
@@ -168,8 +177,12 @@ trait StaffManager
             throw $e;
         }
 
+        Log::info('StaffManager:update getting parent user...');
         $user  = getParentUser();
+        Log::info('StaffManager:update parent user retrieved', ['user_id' => $user->id]);
+
         try {
+            Log::info('StaffManager:update searching for staff record...', ['id' => $id]);
             $staff = User::staff()
                 ->where('is_deleted', Status::NO)
                 ->where('parent_id', $user->id)
@@ -186,7 +199,9 @@ trait StaffManager
         $staff->state     = $request->state;
         $staff->zip       = $request->zip;
         $staff->address   = $request->address;
+        
         try {
+            Log::info('StaffManager:update saving record...');
             $staff->save();
             Log::info('StaffManager:update record saved');
         } catch (\Exception $e) {
@@ -194,6 +209,7 @@ trait StaffManager
             return responseManager("error", "Failed to update staff");
         }
 
+        Log::info('StaffManager:update completed successfully');
         $message = "Staff updated successfully";
         return responseManager("staff", $message, "success");
     }

@@ -2,6 +2,8 @@
 
 namespace App\Lib;
 
+use Illuminate\Support\Facades\Log;
+
 class ClientInfo{
 
     /**
@@ -11,10 +13,12 @@ class ClientInfo{
     */
 	public static function ipInfo()
 	{
+	    Log::info('ClientInfo:ipInfo starting...');
 	    $ip = getRealIP();
 
-
+	    Log::info('ClientInfo:ipInfo calling geoplugin.net...', ['ip' => $ip]);
 	    $xml = @simplexml_load_file("http://www.geoplugin.net/xml.gp?ip=" . $ip);
+	    Log::info('ClientInfo:ipInfo geoplugin.net call returned');
 
 
 	    $country = @$xml->geoplugin_countryName;
@@ -33,6 +37,7 @@ class ClientInfo{
 	    $data['ip'] = $ip;
 	    $data['time'] = date('Y-m-d h:i:s A');
 
+	    Log::info('ClientInfo:ipInfo completed');
 
 	    return $data;
 	}
@@ -43,6 +48,7 @@ class ClientInfo{
     * @return array
     */
 	public static function osBrowser(){
+	    Log::info('ClientInfo:osBrowser starting...');
 	    $userAgent = $_SERVER['HTTP_USER_AGENT'];
 	    $osPlatform = "Unknown OS Platform";
 	    $osArray = array(
@@ -97,6 +103,7 @@ class ClientInfo{
 	    $data['os_platform'] = $osPlatform;
 	    $data['browser'] = $browser;
 
+	    Log::info('ClientInfo:osBrowser completed', ['os' => $osPlatform, 'browser' => $browser]);
 	    return $data;
 	}
 
