@@ -3,7 +3,6 @@
 namespace App\Notify;
 use App\Notify\NotifyProcess;
 use App\Notify\Notifiable;
-use Illuminate\Support\Facades\Log;
 use Mailjet\Client;
 use Mailjet\Resources;
 use PHPMailer\PHPMailer\Exception;
@@ -38,9 +37,7 @@ class Email extends NotifyProcess implements Notifiable{
     * @return void|bool
     */
 	public function send(){
-		Log::info('Email:send starting...');
 		if (!gs('en')) {
-			Log::info('Email:send skipped (notifications disabled)');
 			return false;
 		}
 		//get message from parent
@@ -49,21 +46,15 @@ class Email extends NotifyProcess implements Notifiable{
 			//Send mail
 			$methodName = gs('mail_config')->name;
 			$method = $this->mailMethods($methodName);
-			Log::info('Email:send using method', ['method_name' => $methodName, 'method' => $method, 'to' => $this->email]);
 			try{
 				$this->$method();
-				Log::info('Email:send method call returned');
 				$this->createLog('email');
-				Log::info('Email:send log created');
 			}catch(\Exception $e){
-				Log::error('Email:send failed', ['error' => $e->getMessage()]);
 				$this->createErrorLog($e->getMessage());
 				session()->flash('mail_error',$e->getMessage());
 			}
-		} else {
-			Log::warning('Email:send message could not be retrieved');
 		}
-		Log::info('Email:send completed');
+
 	}
 
     /**
@@ -82,21 +73,16 @@ class Email extends NotifyProcess implements Notifiable{
 	}
 
 	protected function sendPhpMail(){
-        Log::info('Email:sendPhpMail starting...');
         $sentFromName = $this->getEmailFrom()['name'];
         $sentFromEmail = $this->getEmailFrom()['email'];
 		$headers = "From: $sentFromName <$sentFromEmail> \r\n";
 	    $headers .= "Reply-To: $sentFromName <$sentFromEmail> \r\n";
 	    $headers .= "MIME-Version: 1.0\r\n";
 	    $headers .= "Content-Type: text/html; charset=utf-8\r\n";
-	    
-	    Log::info('Email:sendPhpMail calling mail()...');
 	    @mail($this->email, $this->subject, $this->finalMessage, $headers);
-	    Log::info('Email:sendPhpMail mail() returned');
 	}
 
 	protected function sendSmtpMail(){
-		Log::info('Email:sendSmtpMail starting host configuration...');
 		$mail = new PHPMailer(true);
 		$config = gs('mail_config');
         //Server settings
@@ -112,6 +98,10 @@ class Email extends NotifyProcess implements Notifiable{
         }
         $mail->Port       = $config->port;
         $mail->CharSet = 'UTF-8';
+
+        $mail->Timeout = 15;
+        $mail->SMTPConnectTimeout = 15;
+
         //Recipients
         $mail->setFrom($this->getEmailFrom()['email'], $this->getEmailFrom()['name']);
         $mail->addAddress($this->email, $this->receiverName);
@@ -120,25 +110,17 @@ class Email extends NotifyProcess implements Notifiable{
         $mail->isHTML(true);
         $mail->Subject = $this->subject;
         $mail->Body    = $this->finalMessage;
-        
-        Log::info('Email:sendSmtpMail calling $mail->send()...', ['host' => $config->host]);
         $mail->send();
-        Log::info('Email:sendSmtpMail $mail->send() returned');
 	}
 
 	protected function sendSendGridMail(){
-		Log::info('Email:sendSendGridMail starting...');
 		$sendgridMail = new Mail();
 	    $sendgridMail->setFrom($this->getEmailFrom()['email'], $this->getEmailFrom()['name']);
 	    $sendgridMail->setSubject($this->subject);
 	    $sendgridMail->addTo($this->email, $this->receiverName);
 	    $sendgridMail->addContent("text/html", $this->finalMessage);
 	    $sendgrid = new SendGrid(gs('mail_config')->appkey);
-	    
-	    Log::info('Email:sendSendGridMail calling $sendgrid->send()...');
 	    $response = $sendgrid->send($sendgridMail);
-	    Log::info('Email:sendSendGridMail $sendgrid->send() returned', ['status_code' => $response->statusCode()]);
-
 	    if($response->statusCode() != 202){
 	    	throw new Exception(json_decode($response->body())->errors[0]->message);
 
@@ -147,7 +129,6 @@ class Email extends NotifyProcess implements Notifiable{
 
 	protected function sendMailjetMail()
 	{
-		Log::info('Email:sendMailjetMail starting...');
 	    $mj = new Client(gs('mail_config')->public_key, gs('mail_config')->secret_key, true, ['version' => 'v3.1']);
 	    $body = [
 	        'Messages' => [
@@ -168,9 +149,7 @@ class Email extends NotifyProcess implements Notifiable{
 	            ]
 	        ]
 	    ];
-	    Log::info('Email:sendMailjetMail calling $mj->post()...');
 	    $response = $mj->post(Resources::$Email, ['body' => $body]);
-	    Log::info('Email:sendMailjetMail $mj->post() returned', ['status' => $response->getStatus()]);
 	}
 
     /**

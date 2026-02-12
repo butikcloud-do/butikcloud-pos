@@ -214,9 +214,7 @@ function strLimit($title = null, $length = 10)
 
 function getIpInfo()
 {
-    Log::info('helpers:getIpInfo starting...');
     $ipInfo = ClientInfo::ipInfo();
-    Log::info('helpers:getIpInfo completed');
     return $ipInfo;
 }
 
@@ -267,12 +265,6 @@ function getImage($image, $size = null, $isAvatar = false)
 
 function notify($user, $templateName, $shortCodes = null, $sendVia = null, $createLog = true, $pushImage = null)
 {
-    Log::info('helpers:notify starting...', [
-        'user_id' => @$user->id,
-        'template' => $templateName,
-        'send_via' => $sendVia
-    ]);
-
     $globalShortCodes = [
         'site_name'       => gs('site_name'),
         'site_currency'   => gs('cur_text'),
@@ -285,23 +277,14 @@ function notify($user, $templateName, $shortCodes = null, $sendVia = null, $crea
 
     $shortCodes = array_merge($shortCodes ?? [], $globalShortCodes);
 
-    try {
-        Log::info('helpers:notify initializing Notify class...');
-        $notify               = new Notify($sendVia);
-        $notify->templateName = $templateName;
-        $notify->shortCodes   = $shortCodes;
-        $notify->user         = $user;
-        $notify->createLog    = $createLog;
-        $notify->pushImage    = $pushImage;
-        $notify->userColumn   = isset($user->id) ? $user->getForeignKey() : 'user_id';
-        
-        Log::info('helpers:notify calling Notify::send()...');
-        $notify->send();
-        Log::info('helpers:notify Notify::send() returned');
-    } catch (\Exception $e) {
-        Log::error('helpers:notify failed', ['error' => $e->getMessage()]);
-        throw $e;
-    }
+    $notify               = new Notify($sendVia);
+    $notify->templateName = $templateName;
+    $notify->shortCodes   = $shortCodes;
+    $notify->user         = $user;
+    $notify->createLog    = $createLog;
+    $notify->pushImage    = $pushImage;
+    $notify->userColumn   = isset($user->id) ? $user->getForeignKey() : 'user_id';
+    $notify->send();
 }
 
 function getPaginate($paginate = null)
@@ -980,11 +963,8 @@ function getPurchasePrice($plan, $recurringType)
 
 function getParentUser()
 {
-    Log::info('helpers:getParentUser starting...');
     $user = auth()->user();
-    $parent = $user->parent_id ? $user->parent : $user;
-    Log::info('helpers:getParentUser completed', ['parent_id' => @$parent->id]);
-    return $parent;
+    return $user->parent_id ? $user->parent : $user;
 }
 
 function isParentUser()
@@ -1001,27 +981,20 @@ function userSubscriptionExpiredCheck($user = null)
 
 function featureAccessLimitCheck($feature, $limit = 1)
 {
-    Log::info('helpers:featureAccessLimitCheck starting...', ['feature_value' => $feature, 'limit_needed' => $limit]);
     if ($feature == Status::UNLIMITED) {
-        Log::info('helpers:featureAccessLimitCheck result: true (unlimited)');
         return true;
     }
 
-    $result = $feature && $feature >= $limit;
-    Log::info('helpers:featureAccessLimitCheck result', ['status' => $result]);
-    return $result;
+    return $feature && $feature >= $limit;
 }
 
 function decrementFeature($user, $feature, $count = 1)
 {
-    Log::info('helpers:decrementFeature starting...', ['user_id' => $user->id, 'feature' => $feature, 'count' => $count]);
     if ($user->$feature == Status::UNLIMITED) {
-        Log::info('helpers:decrementFeature skipped (unlimited)');
         return;
     }
 
     $user->decrement($feature, $count);
-    Log::info('helpers:decrementFeature completed');
 }
 
 function printLimit($limit)

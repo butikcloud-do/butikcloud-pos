@@ -2,8 +2,6 @@
 
 namespace App\Notify;
 
-use Illuminate\Support\Facades\Log;
-
 class Notify
 {
     /*
@@ -94,12 +92,6 @@ class Notify
     * @return void
     */
 	public function send(){
-		Log::info('Notify:send starting...', [
-			'template' => $this->templateName,
-			'user_id' => @$this->user->id,
-			'via' => $this->sendVia
-		]);
-
 		$methods = [];
 
         //get the notification method classes which are selected
@@ -111,11 +103,8 @@ class Notify
 			$methods = $this->notifyMethods();
 		}
 
-		Log::info('Notify:send methods identified', ['methods' => $methods]);
-
         //send the notification via methods one by one
 		foreach($methods as $method){
-			Log::info('Notify:send calling method...', ['method' => $method]);
 			$notify = new $method;
 			$notify->templateName = $this->templateName;
 			$notify->shortCodes = $this->shortCodes;
@@ -124,10 +113,7 @@ class Notify
 			$notify->userColumn = $this->userColumn;
 			$notify->pushImage = $this->pushImage;
 			$notify->send();
-			Log::info('Notify:send method call returned', ['method' => $method]);
 		}
-
-		Log::info('Notify:send completed');
 	}
 
     /**
